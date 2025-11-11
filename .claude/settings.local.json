@@ -24,7 +24,16 @@
       "Bash(docker-compose down:*)",
       "Bash(curl:*)",
       "Bash(git -C \"C:\\Users\\dcpagotto\\Documents\\Projects\\use-nerd\" diff --stat)",
-      "Bash(git -C \"C:\\Users\\dcpagotto\\Documents\\Projects\\use-nerd\" log --oneline -5)"
+      "Bash(git -C \"C:\\Users\\dcpagotto\\Documents\\Projects\\use-nerd\" log --oneline -5)",
+      "Bash(git -C \"C:\\Users\\dcpagotto\\Documents\\Projects\\use-nerd\" log --oneline -7)",
+      "Bash(tree:*)",
+      "Bash(npm run type-check:*)",
+      "Bash(git -C \"C:\\Users\\dcpagotto\\Documents\\Projects\\use-nerd\" log --oneline -10)",
+      "Bash(git -C \"C:\\Users\\dcpagotto\\Documents\\Projects\\use-nerd\" log --oneline -12)",
+      "Bash(npm install:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(dir:*)"
     ],
     "deny": [],
     "ask": []
