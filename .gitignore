@@ -1,0 +1,242 @@
+# ========================================
+# USE Nerd E-commerce Platform
+# .gitignore - Comprehensive Git Ignore Configuration
+# ========================================
+
+# ========================================
+# Node.js & Package Managers
+# ========================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+package-lock.json
+pnpm-lock.yaml
+
+# Yarn 2+
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+
+# ========================================
+# Environment Variables & Secrets
+# ========================================
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Keep template files
+!.env.template
+!.env.example
+
+# ========================================
+# Medusa Specific
+# ========================================
+.medusa/
+.medusa/server
+uploads/
+medusa-db.sql
+.cache/
+
+# ========================================
+# Build Output & Distribution
+# ========================================
+dist/
+build/
+out/
+.next/
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# ========================================
+# Testing & Coverage
+# ========================================
+coverage/
+.nyc_output/
+*.lcov
+junit.xml
+test-results/
+playwright-report/
+.vitest/
+
+# ========================================
+# IDE & Editor Configurations
+# ========================================
+# VSCode
+.vscode/
+*.code-workspace
+
+# JetBrains IDEs (WebStorm, IntelliJ IDEA, etc.)
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Vim
+*.swp
+*.swo
+*.swn
+*~
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# ========================================
+# Operating System Files
+# ========================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.directory
+
+# ========================================
+# Database Files
+# ========================================
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# PostgreSQL
+*.sql
+*.dump
+
+# ========================================
+# Logs
+# ========================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ========================================
+# Temporary Files
+# ========================================
+tmp/
+temp/
+*.tmp
+*.temp
+.cache/
+
+# ========================================
+# Docker & DevOps
+# ========================================
+.docker/
+docker-compose.override.yml
+
+# ========================================
+# Blockchain & Web3
+# ========================================
+# Hardhat
+cache/
+artifacts/
+typechain-types/
+deployments/localhost/
+
+# Keep deployment configs for production networks
+!deployments/polygon/
+!deployments/mainnet/
+
+# ========================================
+# Security & Sensitive Data
+# ========================================
+# SSL Certificates
+*.pem
+*.key
+*.crt
+*.cer
+*.p12
+*.pfx
+
+# API Keys & Tokens
+secrets/
+credentials/
+*.credentials.json
+.credentials
+
+# ========================================
+# Cloud Provider Specific
+# ========================================
+# AWS
+.aws/
+.elasticbeanstalk/
+
+# Google Cloud
+.gcloud/
+
+# Azure
+.azure/
+
+# ========================================
+# CI/CD & Deployment
+# ========================================
+.github/workflows/*.local.yml
+
+# ========================================
+# Backup Files
+# ========================================
+*.backup
+*.bak
+*.orig
+
+# ========================================
+# Project Specific
+# ========================================
+# Keep important files
+!src/**
+
+# Medusa admin build
+.medusa/admin/
+
+# Static file uploads (user content)
+public/uploads/
+static/uploads/
+
+# ========================================
+# Performance & Profiling
+# ========================================
+*.cpuprofile
+*.heapprofile
+*.heapsnapshot
+
+# ========================================
+# Documentation Build Artifacts
+# ========================================
+.docusaurus/
+docs/.vuepress/dist/
+
+# ========================================
+# Miscellaneous
+# ========================================
+.eslintcache
+.stylelintcache
+*.tgz
+.turbo/
