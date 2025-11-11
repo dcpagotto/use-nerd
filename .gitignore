@@ -206,6 +206,8 @@ credentials/
 *.backup
 *.bak
 *.orig
+backups/
+*.sql.gz
 
 # ========================================
 # Project Specific

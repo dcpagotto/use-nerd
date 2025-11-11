@@ -1,0 +1,109 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: use-nerd-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: use-nerd
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - use-nerd-network
+
+  # Redis Cache & Queue
+  redis:
+    image: redis:7-alpine
+    container_name: use-nerd-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    networks:
+      - use-nerd-network
+
+  # Medusa Backend Service
+  medusa-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: use-nerd-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "9000:9000"  # Backend API
+      - "5173:5173"  # Admin Dev Server
+    volumes:
+      # Bind mount para hot reload (código fonte)
+      - .:/app
+      # Volume anônimo para node_modules (performance no Windows)
+      - /app/node_modules
+      # Volume para build artifacts
+      - medusa_build:/app/.medusa
+    environment:
+      # Database (sslmode=disable para PostgreSQL local)
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/use-nerd?sslmode=disable
+      # Redis
+      - REDIS_URL=redis://redis:6379
+      # CORS
+      - STORE_CORS=http://localhost:8000,http://localhost:3000
+      - ADMIN_CORS=http://localhost:9000,http://localhost:5173
+      - AUTH_CORS=http://localhost:9000,http://localhost:5173
+      # Secrets (use valores seguros em produção!)
+      - JWT_SECRET=supersecret-change-in-production
+      - COOKIE_SECRET=supersecret-change-in-production
+      # Node Environment
+      - NODE_ENV=development
+      # Log Level
+      - LOG_LEVEL=debug
+    env_file:
+      - .env
+    command: npm run dev
+    networks:
+      - use-nerd-network
+    stdin_open: true
+    tty: true
+
+# Networks
+networks:
+  use-nerd-network:
+    driver: bridge
+    name: use-nerd-network
+
+# Volumes
+volumes:
+  postgres_data:
+    driver: local
+    name: use-nerd-postgres-data
+  redis_data:
+    driver: local
+    name: use-nerd-redis-data
+  medusa_build:
+    driver: local
+    name: use-nerd-medusa-build
