@@ -1,0 +1,54 @@
+{
+  "name": "use-nerd-storefront",
+  "version": "0.1.0",
+  "private": true,
+  "description": "USE Nerd Storefront - Next.js 14 e-commerce with blockchain raffles",
+  "author": "USE Nerd Team",
+  "license": "MIT",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "next": "^14.2.18",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "@medusajs/js-sdk": "^2.0.2",
+    "ethers": "^6.13.4",
+    "clsx": "^2.1.1",
+    "framer-motion": "^11.11.11",
+    "react-hot-toast": "^2.4.1",
+    "zustand": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "typescript": "^5.6.3",
+    "tailwindcss": "^4.0.0-alpha.30",
+    "@tailwindcss/typography": "^0.5.15",
+    "postcss": "^8.4.47",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.14.0",
+    "eslint-config-next": "^14.2.18",
+    "prettier": "^3.3.3",
+    "prettier-plugin-tailwindcss": "^0.6.9",
+    "@vitejs/plugin-react": "^4.3.3",
+    "vitest": "^2.1.4",
+    "@vitest/ui": "^2.1.4",
+    "@testing-library/react": "^16.0.1",
+    "@testing-library/jest-dom": "^6.6.3",
+    "jsdom": "^25.0.1"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  }
+}
