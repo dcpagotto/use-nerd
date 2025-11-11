@@ -160,10 +160,17 @@ cache/
 artifacts/
 typechain-types/
 deployments/localhost/
+coverage.json
+gas-report.txt
 
 # Keep deployment configs for production networks
 !deployments/polygon/
 !deployments/mainnet/
+
+# Wallet & Keys (⚠️ NUNCA commitar!)
+*.keystore
+wallet.json
+mnemonic.txt
 
 # ========================================
 # Security & Sensitive Data
