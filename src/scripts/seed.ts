@@ -62,7 +62,8 @@ export default async function seedDemoData({ container }: ExecArgs) {
   const salesChannelModuleService = container.resolve(Modules.SALES_CHANNEL);
   const storeModuleService = container.resolve(Modules.STORE);
 
-  const countries = ["gb", "de", "dk", "se", "fr", "es", "it"];
+  // Brasil como país principal para o mercado brasileiro
+  const countries = ["br"];
 
   logger.info("Seeding store data...");
   const [store] = await storeModuleService.listStores();
@@ -91,11 +92,11 @@ export default async function seedDemoData({ container }: ExecArgs) {
       store_id: store.id,
       supported_currencies: [
         {
-          currency_code: "eur",
+          currency_code: "brl", // Real Brasileiro como moeda padrão
           is_default: true,
         },
         {
-          currency_code: "usd",
+          currency_code: "usd", // Dólar como moeda secundária
         },
       ],
     },
@@ -114,8 +115,8 @@ export default async function seedDemoData({ container }: ExecArgs) {
     input: {
       regions: [
         {
-          name: "Europe",
-          currency_code: "eur",
+          name: "Brasil",
+          currency_code: "brl",
           countries,
           payment_providers: ["pp_system_default"],
         },
@@ -141,11 +142,13 @@ export default async function seedDemoData({ container }: ExecArgs) {
     input: {
       locations: [
         {
-          name: "European Warehouse",
+          name: "Armazém São Paulo",
           address: {
-            city: "Copenhagen",
-            country_code: "DK",
-            address_1: "",
+            city: "São Paulo",
+            country_code: "BR",
+            address_1: "Rua Exemplo, 123",
+            province: "SP",
+            postal_code: "01310-100",
           },
         },
       ],
@@ -193,38 +196,14 @@ export default async function seedDemoData({ container }: ExecArgs) {
   }
 
   const fulfillmentSet = await fulfillmentModuleService.createFulfillmentSets({
-    name: "European Warehouse delivery",
+    name: "Entrega Nacional Brasil",
     type: "shipping",
     service_zones: [
       {
-        name: "Europe",
+        name: "Brasil",
         geo_zones: [
           {
-            country_code: "gb",
-            type: "country",
-          },
-          {
-            country_code: "de",
-            type: "country",
-          },
-          {
-            country_code: "dk",
-            type: "country",
-          },
-          {
-            country_code: "se",
-            type: "country",
-          },
-          {
-            country_code: "fr",
-            type: "country",
-          },
-          {
-            country_code: "es",
-            type: "country",
-          },
-          {
-            country_code: "it",
+            country_code: "br",
             type: "country",
           },
         ],
@@ -244,28 +223,28 @@ export default async function seedDemoData({ container }: ExecArgs) {
   await createShippingOptionsWorkflow(container).run({
     input: [
       {
-        name: "Standard Shipping",
+        name: "Frete Padrão",
         price_type: "flat",
         provider_id: "manual_manual",
         service_zone_id: fulfillmentSet.service_zones[0].id,
         shipping_profile_id: shippingProfile.id,
         type: {
-          label: "Standard",
-          description: "Ship in 2-3 days.",
+          label: "Padrão",
+          description: "Entrega em 5-7 dias úteis.",
           code: "standard",
         },
         prices: [
           {
-            currency_code: "usd",
-            amount: 10,
+            currency_code: "brl",
+            amount: 2500, // R$ 25,00 em centavos
           },
           {
-            currency_code: "eur",
-            amount: 10,
+            currency_code: "usd",
+            amount: 500, // $5.00 em centavos
           },
           {
             region_id: region.id,
-            amount: 10,
+            amount: 2500,
           },
         ],
         rules: [
@@ -282,28 +261,28 @@ export default async function seedDemoData({ container }: ExecArgs) {
         ],
       },
       {
-        name: "Express Shipping",
+        name: "Frete Expresso",
         price_type: "flat",
         provider_id: "manual_manual",
         service_zone_id: fulfillmentSet.service_zones[0].id,
         shipping_profile_id: shippingProfile.id,
         type: {
-          label: "Express",
-          description: "Ship in 24 hours.",
+          label: "Expresso",
+          description: "Entrega em 2-3 dias úteis.",
           code: "express",
         },
         prices: [
           {
-            currency_code: "usd",
-            amount: 10,
+            currency_code: "brl",
+            amount: 4500, // R$ 45,00 em centavos
           },
           {
-            currency_code: "eur",
-            amount: 10,
+            currency_code: "usd",
+            amount: 900, // $9.00 em centavos
           },
           {
             region_id: region.id,
-            amount: 10,
+            amount: 4500,
           },
         ],
         rules: [
@@ -363,19 +342,19 @@ export default async function seedDemoData({ container }: ExecArgs) {
     input: {
       product_categories: [
         {
-          name: "Shirts",
+          name: "Camisetas",
           is_active: true,
         },
         {
-          name: "Sweatshirts",
+          name: "Moletons",
           is_active: true,
         },
         {
-          name: "Pants",
+          name: "Calças",
           is_active: true,
         },
         {
-          name: "Merch",
+          name: "Mercadorias",
           is_active: true,
         },
       ],
@@ -388,7 +367,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
         {
           title: "Medusa T-Shirt",
           category_ids: [
-            categoryResult.find((cat) => cat.name === "Shirts")!.id,
+            categoryResult.find((cat) => cat.name === "Camisetas")!.id,
           ],
           description:
             "Reimagine the feeling of a classic T-shirt. With our cotton T-shirts, everyday essentials no longer have to be ordinary.",
@@ -430,8 +409,8 @@ export default async function seedDemoData({ container }: ExecArgs) {
               },
               prices: [
                 {
-                  amount: 10,
-                  currency_code: "eur",
+                  amount: 6000,
+                  currency_code: "brl",
                 },
                 {
                   amount: 15,
@@ -448,8 +427,8 @@ export default async function seedDemoData({ container }: ExecArgs) {
               },
               prices: [
                 {
-                  amount: 10,
-                  currency_code: "eur",
+                  amount: 6000,
+                  currency_code: "brl",
                 },
                 {
                   amount: 15,
@@ -466,8 +445,8 @@ export default async function seedDemoData({ container }: ExecArgs) {
               },
               prices: [
                 {
-                  amount: 10,
-                  currency_code: "eur",
+                  amount: 6000,
+                  currency_code: "brl",
                 },
                 {
                   amount: 15,
@@ -484,8 +463,8 @@ export default async function seedDemoData({ container }: ExecArgs) {
               },
               prices: [
                 {
-                  amount: 10,
-                  currency_code: "eur",
+                  amount: 6000,
+                  currency_code: "brl",
                 },
                 {
                   amount: 15,
@@ -502,8 +481,8 @@ export default async function seedDemoData({ container }: ExecArgs) {
               },
               prices: [
                 {
-                  amount: 10,
-                  currency_code: "eur",
+                  amount: 6000,
+                  currency_code: "brl",
                 },
                 {
                   amount: 15,
@@ -520,8 +499,8 @@ export default async function seedDemoData({ container }: ExecArgs) {
               },
               prices: [
                 {
-                  amount: 10,
-                  currency_code: "eur",
+                  amount: 6000,
+                  currency_code: "brl",
                 },
                 {
                   amount: 15,
@@ -538,8 +517,8 @@ export default async function seedDemoData({ container }: ExecArgs) {
               },
               prices: [
                 {
-                  amount: 10,
-                  currency_code: "eur",
+                  amount: 6000,
+                  currency_code: "brl",
                 },
                 {
                   amount: 15,
@@ -556,8 +535,8 @@ export default async function seedDemoData({ container }: ExecArgs) {
               },
               prices: [
                 {
-                  amount: 10,
-                  currency_code: "eur",
+                  amount: 6000,
+                  currency_code: "brl",
                 },
                 {
                   amount: 15,
@@ -575,7 +554,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
         {
           title: "Medusa Sweatshirt",
           category_ids: [
-            categoryResult.find((cat) => cat.name === "Sweatshirts")!.id,
+            categoryResult.find((cat) => cat.name === "Moletons")!.id,
           ],
           description:
             "Reimagine the feeling of a classic sweatshirt. With our cotton sweatshirt, everyday essentials no longer have to be ordinary.",
@@ -606,8 +585,8 @@ export default async function seedDemoData({ container }: ExecArgs) {
               },
               prices: [
                 {
-                  amount: 10,
-                  currency_code: "eur",
+                  amount: 6000,
+                  currency_code: "brl",
                 },
                 {
                   amount: 15,
@@ -623,8 +602,8 @@ export default async function seedDemoData({ container }: ExecArgs) {
               },
               prices: [
                 {
-                  amount: 10,
-                  currency_code: "eur",
+                  amount: 6000,
+                  currency_code: "brl",
                 },
                 {
                   amount: 15,
@@ -640,8 +619,8 @@ export default async function seedDemoData({ container }: ExecArgs) {
               },
               prices: [
                 {
-                  amount: 10,
-                  currency_code: "eur",
+                  amount: 6000,
+                  currency_code: "brl",
                 },
                 {
                   amount: 15,
@@ -657,8 +636,8 @@ export default async function seedDemoData({ container }: ExecArgs) {
               },
               prices: [
                 {
-                  amount: 10,
-                  currency_code: "eur",
+                  amount: 6000,
+                  currency_code: "brl",
                 },
                 {
                   amount: 15,
@@ -676,7 +655,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
         {
           title: "Medusa Sweatpants",
           category_ids: [
-            categoryResult.find((cat) => cat.name === "Pants")!.id,
+            categoryResult.find((cat) => cat.name === "Calças")!.id,
           ],
           description:
             "Reimagine the feeling of classic sweatpants. With our cotton sweatpants, everyday essentials no longer have to be ordinary.",
@@ -707,8 +686,8 @@ export default async function seedDemoData({ container }: ExecArgs) {
               },
               prices: [
                 {
-                  amount: 10,
-                  currency_code: "eur",
+                  amount: 6000,
+                  currency_code: "brl",
                 },
                 {
                   amount: 15,
@@ -724,8 +703,8 @@ export default async function seedDemoData({ container }: ExecArgs) {
               },
               prices: [
                 {
-                  amount: 10,
-                  currency_code: "eur",
+                  amount: 6000,
+                  currency_code: "brl",
                 },
                 {
                   amount: 15,
@@ -741,8 +720,8 @@ export default async function seedDemoData({ container }: ExecArgs) {
               },
               prices: [
                 {
-                  amount: 10,
-                  currency_code: "eur",
+                  amount: 6000,
+                  currency_code: "brl",
                 },
                 {
                   amount: 15,
@@ -758,8 +737,8 @@ export default async function seedDemoData({ container }: ExecArgs) {
               },
               prices: [
                 {
-                  amount: 10,
-                  currency_code: "eur",
+                  amount: 6000,
+                  currency_code: "brl",
                 },
                 {
                   amount: 15,
@@ -777,7 +756,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
         {
           title: "Medusa Shorts",
           category_ids: [
-            categoryResult.find((cat) => cat.name === "Merch")!.id,
+            categoryResult.find((cat) => cat.name === "Mercadorias")!.id,
           ],
           description:
             "Reimagine the feeling of classic shorts. With our cotton shorts, everyday essentials no longer have to be ordinary.",
@@ -808,8 +787,8 @@ export default async function seedDemoData({ container }: ExecArgs) {
               },
               prices: [
                 {
-                  amount: 10,
-                  currency_code: "eur",
+                  amount: 6000,
+                  currency_code: "brl",
                 },
                 {
                   amount: 15,
@@ -825,8 +804,8 @@ export default async function seedDemoData({ container }: ExecArgs) {
               },
               prices: [
                 {
-                  amount: 10,
-                  currency_code: "eur",
+                  amount: 6000,
+                  currency_code: "brl",
                 },
                 {
                   amount: 15,
@@ -842,8 +821,8 @@ export default async function seedDemoData({ container }: ExecArgs) {
               },
               prices: [
                 {
-                  amount: 10,
-                  currency_code: "eur",
+                  amount: 6000,
+                  currency_code: "brl",
                 },
                 {
                   amount: 15,
@@ -859,8 +838,8 @@ export default async function seedDemoData({ container }: ExecArgs) {
               },
               prices: [
                 {
-                  amount: 10,
-                  currency_code: "eur",
+                  amount: 6000,
+                  currency_code: "brl",
                 },
                 {
                   amount: 15,
