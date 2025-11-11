@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Orbitron, Rajdhani } from 'next/font/google';
 import './globals.css';
+import ClientLayout from '@/components/ClientLayout';
 
 // Orbitron - Display/Heading font (futuristic, cyberpunk)
 const orbitron = Orbitron({
@@ -51,7 +52,9 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className={`${orbitron.variable} ${rajdhani.variable} dark`}>
       <body className="font-cyber antialiased">
-        {children}
+        <ClientLayout>
+          {children}
+        </ClientLayout>
       </body>
     </html>
   );
