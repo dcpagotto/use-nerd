@@ -1,8 +1,22 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Orbitron, Rajdhani } from 'next/font/google';
 import './globals.css';
 
-const inter = Inter({ subsets: ['latin'] });
+// Orbitron - Display/Heading font (futuristic, cyberpunk)
+const orbitron = Orbitron({
+  subsets: ['latin'],
+  weight: ['400', '600', '700', '800'],
+  variable: '--font-orbitron',
+  display: 'swap',
+});
+
+// Rajdhani - Body/UI font (clean, tech-inspired)
+const rajdhani = Rajdhani({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-rajdhani',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'USE Nerd - E-commerce com Rifas Blockchain',
@@ -35,8 +49,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR">
-      <body className={inter.className}>
+    <html lang="pt-BR" className={`${orbitron.variable} ${rajdhani.variable} dark`}>
+      <body className="font-cyber antialiased">
         {children}
       </body>
     </html>

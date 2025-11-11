@@ -2,32 +2,496 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ========================================
+   CYBERPUNK THEME - CSS VARIABLES
+   ======================================== */
+
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  /* Color scheme */
+  color-scheme: dark;
+
+  /* Primary Neon Purple */
+  --color-primary: #B026FF;
+  --color-primary-light: #CC99FF;
+  --color-primary-dark: #7E22CE;
+
+  /* Cyber Blue */
+  --color-secondary: #06B6D4;
+  --color-secondary-light: #22D3EE;
+  --color-secondary-dark: #0E7490;
+
+  /* Accent Colors */
+  --color-accent-pink: #EC4899;
+  --color-accent-green: #10B981;
+  --color-accent-yellow: #FBBF24;
+  --color-accent-red: #EF4444;
+
+  /* Dark Backgrounds */
+  --bg-primary: #0A0A0F;
+  --bg-secondary: #0F0F14;
+  --bg-tertiary: #1A1A24;
+
+  /* Text Colors */
+  --text-primary: #F9FAFB;
+  --text-secondary: #D1D5DB;
+  --text-muted: #9CA3AF;
+
+  /* Borders */
+  --border-primary: rgba(176, 38, 255, 0.3);
+  --border-secondary: rgba(6, 182, 212, 0.3);
+
+  /* Glow Effects */
+  --glow-purple: 0 0 20px rgba(176, 38, 255, 0.5), 0 0 40px rgba(176, 38, 255, 0.3);
+  --glow-blue: 0 0 20px rgba(6, 182, 212, 0.5), 0 0 40px rgba(6, 182, 212, 0.3);
+  --glow-pink: 0 0 20px rgba(236, 72, 153, 0.5), 0 0 40px rgba(236, 72, 153, 0.3);
+
+  /* Font Variables (to be loaded via Next.js fonts) */
+  --font-geist-sans: 'Geist Sans', system-ui, sans-serif;
+  --font-geist-mono: 'Geist Mono', 'Courier New', monospace;
+  --font-orbitron: 'Orbitron', system-ui, sans-serif;
+  --font-rajdhani: 'Rajdhani', system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+/* ========================================
+   BASE STYLES
+   ======================================== */
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  font-family: var(--font-geist-sans);
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
+/* Cyberpunk grid background effect */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    linear-gradient(rgba(176, 38, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(176, 38, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ========================================
+   CUSTOM SCROLLBAR
+   ======================================== */
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 5px;
+  box-shadow: var(--glow-purple);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-light);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary) var(--bg-secondary);
+}
+
+/* ========================================
+   SELECTION STYLES
+   ======================================== */
+
+::selection {
+  background: var(--color-primary);
+  color: white;
+}
+
+::-moz-selection {
+  background: var(--color-primary);
+  color: white;
+}
+
+/* ========================================
+   CUSTOM ANIMATIONS
+   ======================================== */
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: var(--glow-purple);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(176, 38, 255, 0.8), 0 0 60px rgba(176, 38, 255, 0.5);
+  }
+}
+
+@keyframes neon-flicker {
+  0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+    opacity: 1;
+  }
+  20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes scan-line {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100vh);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes glitch {
+  0% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(-2px, -2px);
+  }
+  60% {
+    transform: translate(2px, 2px);
+  }
+  80% {
+    transform: translate(2px, -2px);
+  }
+  100% {
+    transform: translate(0);
+  }
+}
+
+@keyframes cyber-blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
+/* ========================================
+   TAILWIND COMPONENT LAYER
+   ======================================== */
+
+@layer components {
+  /* Neon Button Base */
+  .btn-neon {
+    @apply relative inline-flex items-center justify-center px-6 py-3 font-semibold text-white transition-all duration-300;
+    @apply bg-transparent border-2 rounded-cyber overflow-hidden;
+    @apply hover:scale-105 active:scale-95;
+  }
+
+  .btn-neon-purple {
+    @apply btn-neon border-neon-purple text-neon-purple;
+    @apply hover:bg-neon-purple hover:text-white hover:shadow-neon-purple;
+  }
+
+  .btn-neon-blue {
+    @apply btn-neon border-neon-blue text-neon-blue;
+    @apply hover:bg-neon-blue hover:text-white hover:shadow-neon-blue;
+  }
+
+  .btn-neon-pink {
+    @apply btn-neon border-neon-pink text-neon-pink;
+    @apply hover:bg-neon-pink hover:text-white hover:shadow-neon-pink;
+  }
+
+  /* Filled Neon Button */
+  .btn-neon-filled {
+    @apply relative inline-flex items-center justify-center px-6 py-3 font-semibold text-white transition-all duration-300;
+    @apply rounded-cyber overflow-hidden;
+    @apply hover:scale-105 active:scale-95;
+  }
+
+  .btn-neon-filled-purple {
+    @apply btn-neon-filled bg-neon-purple shadow-neon-purple-sm;
+    @apply hover:shadow-neon-purple;
+  }
+
+  .btn-neon-filled-blue {
+    @apply btn-neon-filled bg-neon-blue shadow-neon-blue-sm;
+    @apply hover:shadow-neon-blue;
+  }
+
+  /* Card Styles */
+  .card-cyber {
+    @apply relative bg-cyber-dark-100 rounded-cyber-lg border border-neon-purple/30;
+    @apply shadow-cyber backdrop-blur-sm;
+    @apply transition-all duration-300;
+    @apply hover:border-neon-purple/60 hover:shadow-cyber-lg;
+  }
+
+  .card-cyber-glow {
+    @apply card-cyber hover:shadow-neon-purple;
+  }
+
+  /* Input Styles */
+  .input-cyber {
+    @apply w-full px-4 py-3 bg-cyber-dark-100 border border-neon-purple/30 rounded-cyber;
+    @apply text-white placeholder:text-gray-cyber-400;
+    @apply focus:outline-none focus:border-neon-purple focus:shadow-neon-purple-sm;
+    @apply transition-all duration-300;
+  }
+
+  /* Text Gradient */
+  .text-gradient-cyber {
+    @apply bg-gradient-to-r from-neon-purple via-neon-pink to-neon-blue bg-clip-text text-transparent;
+  }
+
+  .text-gradient-neon {
+    @apply bg-gradient-neon bg-clip-text text-transparent;
+  }
+
+  /* Neon Border */
+  .border-neon-glow {
+    @apply border border-neon-purple shadow-neon-purple-sm;
+  }
+
+  /* Glassmorphism */
+  .glass-cyber {
+    @apply bg-cyber-dark-100/40 backdrop-blur-md border border-white/10;
+  }
+
+  /* Scan Line Effect Container */
+  .scan-line-container {
+    @apply relative overflow-hidden;
+  }
+
+  .scan-line-container::after {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-b from-transparent via-neon-purple/20 to-transparent;
+    @apply h-32 w-full animate-scan-line pointer-events-none;
+  }
+
+  /* Grid Background */
+  .grid-cyber-bg {
+    @apply bg-grid-cyber bg-grid-md;
+  }
+
+  /* Section Container */
+  .section-cyber {
+    @apply relative py-20 px-4 md:px-8 overflow-hidden;
+  }
+
+  .section-cyber::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-b from-neon-purple/5 to-transparent pointer-events-none;
+  }
+}
+
+/* ========================================
+   TAILWIND UTILITIES LAYER
+   ======================================== */
+
 @layer utilities {
+  /* Text Shadow Glow */
+  .text-glow-purple {
+    text-shadow: 0 0 10px rgba(176, 38, 255, 0.8), 0 0 20px rgba(176, 38, 255, 0.5);
+  }
+
+  .text-glow-blue {
+    text-shadow: 0 0 10px rgba(6, 182, 212, 0.8), 0 0 20px rgba(6, 182, 212, 0.5);
+  }
+
+  .text-glow-pink {
+    text-shadow: 0 0 10px rgba(236, 72, 153, 0.8), 0 0 20px rgba(236, 72, 153, 0.5);
+  }
+
+  .text-glow-green {
+    text-shadow: 0 0 10px rgba(16, 185, 129, 0.8), 0 0 20px rgba(16, 185, 129, 0.5);
+  }
+
+  /* Clip Path Utilities */
+  .clip-polygon-cyber {
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+  }
+
+  /* Perspective Utilities */
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  .transform-3d {
+    transform-style: preserve-3d;
+  }
+
+  /* Custom Hover Effects */
+  .hover-lift {
+    @apply transition-transform duration-300 hover:-translate-y-2;
+  }
+
+  .hover-glow {
+    @apply transition-all duration-300 hover:shadow-neon-purple;
+  }
+
+  /* Neon Text */
+  .neon-text-purple {
+    @apply text-neon-purple text-glow-purple;
+  }
+
+  .neon-text-blue {
+    @apply text-neon-blue text-glow-blue;
+  }
+
+  .neon-text-pink {
+    @apply text-neon-pink text-glow-pink;
+  }
+
+  /* Glitch Effect */
+  .glitch-effect {
+    @apply relative inline-block;
+  }
+
+  .glitch-effect::before,
+  .glitch-effect::after {
+    content: attr(data-text);
+    @apply absolute inset-0;
+  }
+
+  .glitch-effect::before {
+    @apply animate-glitch;
+    clip: rect(0, 900px, 0, 0);
+    color: #ff00ff;
+  }
+
+  .glitch-effect::after {
+    @apply animate-glitch;
+    animation-delay: 0.5s;
+    clip: rect(0, 900px, 0, 0);
+    color: #00ffff;
+  }
+
+  /* Background Utilities */
+  .bg-cyber-gradient {
+    @apply bg-gradient-cyber;
+  }
+
+  .bg-neon-gradient {
+    @apply bg-gradient-neon;
+  }
+
+  /* Border Glow Animation */
+  .border-glow-animate {
+    @apply animate-glow-pulse;
+  }
+
+  /* Text Balance */
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* Hide scrollbar */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Custom focus styles */
+  .focus-cyber {
+    @apply focus:outline-none focus:ring-2 focus:ring-neon-purple focus:ring-offset-2 focus:ring-offset-cyber-dark;
+  }
+}
+
+/* ========================================
+   TYPOGRAPHY ENHANCEMENTS
+   ======================================== */
+
+h1, h2, h3, h4, h5, h6 {
+  @apply font-display;
+  letter-spacing: -0.02em;
+}
+
+a {
+  @apply transition-colors duration-200;
+}
+
+/* ========================================
+   ACCESSIBILITY
+   ======================================== */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Focus visible for keyboard navigation */
+*:focus-visible {
+  @apply outline-none ring-2 ring-neon-purple ring-offset-2 ring-offset-cyber-dark;
+}
+
+/* ========================================
+   LOADING STATES
+   ======================================== */
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 3s linear infinite;
+}
+
+/* Skeleton loader */
+.skeleton {
+  @apply bg-gradient-to-r from-cyber-dark-100 via-cyber-dark-50 to-cyber-dark-100;
+  @apply bg-[length:200%_100%];
+  @apply animate-[shimmer_1.5s_ease-in-out_infinite];
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
   }
 }

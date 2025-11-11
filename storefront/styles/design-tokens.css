@@ -1,0 +1,355 @@
+/**
+ * USE NERD - DESIGN TOKENS
+ * Cyberpunk Theme Design System
+ *
+ * This file contains all design tokens for the USE Nerd platform.
+ * These tokens ensure consistency across the entire application.
+ */
+
+/* ========================================
+   COLOR PALETTE
+   ======================================== */
+
+/**
+ * PRIMARY COLORS - Neon Purple
+ * Main brand color used for primary actions and emphasis
+ */
+:root {
+  --color-neon-purple-50: #F3E5FF;
+  --color-neon-purple-100: #E6CCFF;
+  --color-neon-purple-200: #D9B3FF;
+  --color-neon-purple-300: #CC99FF;
+  --color-neon-purple-400: #BF80FF;
+  --color-neon-purple-500: #B026FF; /* Default */
+  --color-neon-purple-600: #9333EA;
+  --color-neon-purple-700: #7E22CE;
+  --color-neon-purple-800: #6B21A8;
+  --color-neon-purple-900: #581C87;
+}
+
+/**
+ * SECONDARY COLORS - Cyber Blue
+ * Secondary actions, links, and tech elements
+ */
+:root {
+  --color-cyber-blue-50: #ECFEFF;
+  --color-cyber-blue-100: #CFFAFE;
+  --color-cyber-blue-200: #A5F3FC;
+  --color-cyber-blue-300: #67E8F9;
+  --color-cyber-blue-400: #22D3EE;
+  --color-cyber-blue-500: #06B6D4; /* Default */
+  --color-cyber-blue-600: #0891B2;
+  --color-cyber-blue-700: #0E7490;
+  --color-cyber-blue-800: #155E75;
+  --color-cyber-blue-900: #164E63;
+}
+
+/**
+ * ACCENT COLORS
+ * Used for highlights, status indicators, and special elements
+ */
+:root {
+  /* Hot Pink */
+  --color-hot-pink-50: #FDF2F8;
+  --color-hot-pink-100: #FCE7F3;
+  --color-hot-pink-200: #FBCFE8;
+  --color-hot-pink-300: #F9A8D4;
+  --color-hot-pink-400: #F472B6;
+  --color-hot-pink-500: #EC4899; /* Default */
+  --color-hot-pink-600: #DB2777;
+  --color-hot-pink-700: #BE185D;
+  --color-hot-pink-800: #9F1239;
+  --color-hot-pink-900: #831843;
+
+  /* Matrix Green - Success, Active, Tech */
+  --color-matrix-green-50: #ECFDF5;
+  --color-matrix-green-100: #D1FAE5;
+  --color-matrix-green-200: #A7F3D0;
+  --color-matrix-green-300: #6EE7B7;
+  --color-matrix-green-400: #34D399;
+  --color-matrix-green-500: #10B981; /* Default */
+  --color-matrix-green-600: #059669;
+  --color-matrix-green-700: #047857;
+  --color-matrix-green-800: #065F46;
+  --color-matrix-green-900: #064E3B;
+
+  /* Electric Yellow - Warning */
+  --color-electric-yellow-50: #FFFBEB;
+  --color-electric-yellow-100: #FEF3C7;
+  --color-electric-yellow-200: #FDE68A;
+  --color-electric-yellow-300: #FCD34D;
+  --color-electric-yellow-400: #FBBF24; /* Default */
+  --color-electric-yellow-500: #F59E0B;
+  --color-electric-yellow-600: #D97706;
+  --color-electric-yellow-700: #B45309;
+  --color-electric-yellow-800: #92400E;
+  --color-electric-yellow-900: #78350F;
+
+  /* Danger Red - Error, Critical */
+  --color-danger-red-50: #FEF2F2;
+  --color-danger-red-100: #FEE2E2;
+  --color-danger-red-200: #FECACA;
+  --color-danger-red-300: #FCA5A5;
+  --color-danger-red-400: #F87171;
+  --color-danger-red-500: #EF4444; /* Default */
+  --color-danger-red-600: #DC2626;
+  --color-danger-red-700: #B91C1C;
+  --color-danger-red-800: #991B1B;
+  --color-danger-red-900: #7F1D1D;
+}
+
+/**
+ * NEUTRAL COLORS - Dark Theme
+ * Backgrounds, surfaces, and text
+ */
+:root {
+  /* Cyber Dark - Backgrounds */
+  --color-cyber-dark-50: #1A1A24;
+  --color-cyber-dark-100: #0F0F14;
+  --color-cyber-dark-200: #0A0A0F; /* Default Background */
+  --color-cyber-dark-300: #050508;
+
+  /* Gray Scale - Text and Borders */
+  --color-gray-50: #F9FAFB;
+  --color-gray-100: #F3F4F6;
+  --color-gray-200: #E5E7EB;
+  --color-gray-300: #D1D5DB;
+  --color-gray-400: #9CA3AF;
+  --color-gray-500: #6B7280;
+  --color-gray-600: #4B5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1F2937;
+  --color-gray-900: #111827;
+}
+
+/* ========================================
+   SEMANTIC COLORS
+   ======================================== */
+
+:root {
+  /* Backgrounds */
+  --bg-primary: var(--color-cyber-dark-200);
+  --bg-secondary: var(--color-cyber-dark-100);
+  --bg-tertiary: var(--color-cyber-dark-50);
+  --bg-overlay: rgba(10, 10, 15, 0.8);
+
+  /* Text */
+  --text-primary: var(--color-gray-50);
+  --text-secondary: var(--color-gray-300);
+  --text-muted: var(--color-gray-400);
+  --text-inverse: var(--color-cyber-dark-200);
+
+  /* Borders */
+  --border-primary: rgba(176, 38, 255, 0.3);
+  --border-secondary: rgba(6, 182, 212, 0.3);
+  --border-muted: rgba(255, 255, 255, 0.1);
+
+  /* Status */
+  --color-success: var(--color-matrix-green-500);
+  --color-warning: var(--color-electric-yellow-400);
+  --color-error: var(--color-danger-red-500);
+  --color-info: var(--color-cyber-blue-500);
+}
+
+/* ========================================
+   TYPOGRAPHY
+   ======================================== */
+
+:root {
+  /* Font Families */
+  --font-sans: 'Geist Sans', system-ui, -apple-system, sans-serif;
+  --font-display: 'Orbitron', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', 'Courier New', monospace;
+  --font-cyber: 'Rajdhani', system-ui, sans-serif;
+
+  /* Font Sizes */
+  --text-xs: 0.75rem;      /* 12px */
+  --text-sm: 0.875rem;     /* 14px */
+  --text-base: 1rem;       /* 16px */
+  --text-lg: 1.125rem;     /* 18px */
+  --text-xl: 1.25rem;      /* 20px */
+  --text-2xl: 1.5rem;      /* 24px */
+  --text-3xl: 1.875rem;    /* 30px */
+  --text-4xl: 2.25rem;     /* 36px */
+  --text-5xl: 3rem;        /* 48px */
+  --text-6xl: 3.75rem;     /* 60px */
+  --text-7xl: 4.5rem;      /* 72px */
+
+  /* Display Sizes */
+  --display-1: 4.5rem;     /* 72px - Hero */
+  --display-2: 3.75rem;    /* 60px - Major Sections */
+  --display-3: 3rem;       /* 48px - Sub-sections */
+
+  /* Heading Sizes */
+  --heading-1: 2.25rem;    /* 36px - H1 */
+  --heading-2: 1.875rem;   /* 30px - H2 */
+  --heading-3: 1.5rem;     /* 24px - H3 */
+
+  /* Line Heights */
+  --leading-tight: 1.2;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.75;
+
+  /* Letter Spacing */
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.025em;
+
+  /* Font Weights */
+  --font-light: 300;
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  --font-extrabold: 800;
+}
+
+/* ========================================
+   SPACING
+   ======================================== */
+
+:root {
+  --space-0: 0;
+  --space-1: 0.25rem;      /* 4px */
+  --space-2: 0.5rem;       /* 8px */
+  --space-3: 0.75rem;      /* 12px */
+  --space-4: 1rem;         /* 16px */
+  --space-5: 1.25rem;      /* 20px */
+  --space-6: 1.5rem;       /* 24px */
+  --space-8: 2rem;         /* 32px */
+  --space-10: 2.5rem;      /* 40px */
+  --space-12: 3rem;        /* 48px */
+  --space-16: 4rem;        /* 64px */
+  --space-20: 5rem;        /* 80px */
+  --space-24: 6rem;        /* 96px */
+  --space-32: 8rem;        /* 128px */
+}
+
+/* ========================================
+   BORDER RADIUS
+   ======================================== */
+
+:root {
+  --radius-none: 0;
+  --radius-sm: 0.25rem;    /* 4px */
+  --radius-base: 0.375rem; /* 6px */
+  --radius-md: 0.5rem;     /* 8px - Cyber default */
+  --radius-lg: 1rem;       /* 16px - Cyber large */
+  --radius-xl: 1.5rem;     /* 24px - Cyber XL */
+  --radius-full: 9999px;   /* Full circle */
+}
+
+/* ========================================
+   SHADOWS
+   ======================================== */
+
+:root {
+  /* Standard Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-base: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+
+  /* Cyberpunk Shadows */
+  --shadow-cyber: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 1px rgba(176, 38, 255, 0.2);
+  --shadow-cyber-lg: 0 16px 64px rgba(0, 0, 0, 0.5), 0 0 2px rgba(176, 38, 255, 0.3);
+
+  /* Neon Glow Shadows */
+  --shadow-neon-purple: 0 0 20px rgba(176, 38, 255, 0.5), 0 0 40px rgba(176, 38, 255, 0.3);
+  --shadow-neon-purple-sm: 0 0 10px rgba(176, 38, 255, 0.4);
+  --shadow-neon-blue: 0 0 20px rgba(6, 182, 212, 0.5), 0 0 40px rgba(6, 182, 212, 0.3);
+  --shadow-neon-blue-sm: 0 0 10px rgba(6, 182, 212, 0.4);
+  --shadow-neon-pink: 0 0 20px rgba(236, 72, 153, 0.5), 0 0 40px rgba(236, 72, 153, 0.3);
+  --shadow-neon-green: 0 0 20px rgba(16, 185, 129, 0.5), 0 0 40px rgba(16, 185, 129, 0.3);
+}
+
+/* ========================================
+   Z-INDEX SCALE
+   ======================================== */
+
+:root {
+  --z-0: 0;
+  --z-10: 10;
+  --z-20: 20;
+  --z-30: 30;
+  --z-40: 40;
+  --z-50: 50;
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+}
+
+/* ========================================
+   BREAKPOINTS
+   ======================================== */
+
+/**
+ * Mobile First Breakpoints
+ *
+ * sm: 640px   - Small tablets
+ * md: 768px   - Tablets
+ * lg: 1024px  - Laptops
+ * xl: 1280px  - Desktops
+ * 2xl: 1536px - Large screens
+ */
+
+/* ========================================
+   TRANSITIONS
+   ======================================== */
+
+:root {
+  /* Durations */
+  --duration-75: 75ms;
+  --duration-100: 100ms;
+  --duration-150: 150ms;
+  --duration-200: 200ms;
+  --duration-300: 300ms;
+  --duration-500: 500ms;
+  --duration-700: 700ms;
+  --duration-1000: 1000ms;
+
+  /* Easing Functions */
+  --ease-linear: linear;
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Cyberpunk Transitions */
+  --transition-base: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-glow: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-transform: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ========================================
+   GRADIENTS
+   ======================================== */
+
+:root {
+  /* Cyberpunk Gradients */
+  --gradient-cyber: linear-gradient(135deg, #B026FF 0%, #06B6D4 100%);
+  --gradient-cyber-reverse: linear-gradient(135deg, #06B6D4 0%, #B026FF 100%);
+  --gradient-neon: linear-gradient(135deg, #B026FF 0%, #EC4899 50%, #06B6D4 100%);
+  --gradient-matrix: linear-gradient(180deg, #0A0A0F 0%, #10B981 100%);
+
+  /* Overlay Gradients */
+  --gradient-overlay-top: linear-gradient(180deg, rgba(10, 10, 15, 0.8) 0%, transparent 100%);
+  --gradient-overlay-bottom: linear-gradient(0deg, rgba(10, 10, 15, 0.8) 0%, transparent 100%);
+}
+
+/* ========================================
+   ANIMATION DURATIONS
+   ======================================== */
+
+:root {
+  --animate-glow-pulse: 2s;
+  --animate-neon-flicker: 1.5s;
+  --animate-scan-line: 8s;
+  --animate-float: 6s;
+  --animate-glitch: 1s;
+  --animate-cyber-blink: 1.5s;
+}
