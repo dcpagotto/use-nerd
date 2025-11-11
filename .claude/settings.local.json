@@ -22,7 +22,9 @@
       "Bash(docker-compose exec:*)",
       "Bash(docker-compose restart:*)",
       "Bash(docker-compose down:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(git -C \"C:\\Users\\dcpagotto\\Documents\\Projects\\use-nerd\" diff --stat)",
+      "Bash(git -C \"C:\\Users\\dcpagotto\\Documents\\Projects\\use-nerd\" log --oneline -5)"
     ],
     "deny": [],
     "ask": []

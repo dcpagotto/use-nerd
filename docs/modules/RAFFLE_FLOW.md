@@ -259,17 +259,126 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
 
 ---
 
+## 🧪 Testando o Fluxo Completo
+
+### Endpoint de Teste (Desenvolvimento)
+
+Para testar o fluxo sem interagir com o Chainlink VRF real, use:
+
+```bash
+POST /admin/raffles/:id/test-draw
+```
+
+Este endpoint:
+1. Valida que a rifa está ativa
+2. Muda status para "drawing"
+3. Cria registro de draw com VRF simulado
+4. Gera números aleatórios pseudo-random
+5. Dispara evento `raffle.chainlink_vrf_callback` após 2s
+6. Processa vencedor automaticamente
+
+**Exemplo de uso**:
+```bash
+curl -X POST http://localhost:9000/admin/raffles/raffle_123/test-draw \
+  -H "Content-Type: application/json"
+```
+
+**Resposta**:
+```json
+{
+  "message": "Test draw initiated successfully",
+  "draw": {
+    "id": "draw_abc",
+    "raffle_id": "raffle_123",
+    "vrf_request_id": "test-1699876543210-x7k2m",
+    "status": "requested"
+  },
+  "preview": {
+    "winner_number": 42,
+    "total_tickets": 100,
+    "random_words": ["12345678901234567890"]
+  },
+  "note": "VRF callback will be processed in ~2 seconds"
+}
+```
+
+⚠️ **IMPORTANTE**: Este endpoint é automaticamente desabilitado em `NODE_ENV=production`
+
+### Fluxo de Teste End-to-End
+
+1. **Criar Rifa**:
+```bash
+POST /admin/raffles
+{
+  "title": "iPhone 15 Pro Max",
+  "prize_description": "iPhone 15 Pro Max 256GB",
+  "total_tickets": 100,
+  "ticket_price": 5000,
+  "draw_date": "2025-12-31T23:59:59Z"
+}
+```
+
+2. **Publicar Rifa** (simula deploy blockchain):
+```bash
+POST /admin/raffles/:id/publish
+```
+
+3. **Comprar Tickets** (via storefront):
+```bash
+POST /store/carts/:id/line-items
+{
+  "variant_id": "variant_raffle_ticket",
+  "quantity": 5,
+  "metadata": { "raffle_id": "raffle_123" }
+}
+```
+
+4. **Finalizar Pedido**:
+```bash
+POST /store/carts/:id/complete
+```
+
+5. **Simular Pagamento**:
+```bash
+POST /admin/orders/:id/capture-payment
+```
+
+6. **Executar Sorteio de Teste**:
+```bash
+POST /admin/raffles/:id/test-draw
+```
+
+7. **Verificar Vencedor** (após 2-3 segundos):
+```bash
+GET /admin/raffles/:id
+# Verificar campos: winner_ticket_number, winner_customer_id, status: "completed"
+```
+
+---
+
 ## 🚀 Próximos Passos
 
 Para ativar completamente o sistema:
 
-1. **Integrar services reais** nos subscribers (remover TODOs)
-2. **Criar webhook** para Chainlink VRF
-3. **Configurar email service** (SendGrid, Resend, etc.)
-4. **Configurar notification service** (in-app)
-5. **Testar fluxo completo** end-to-end
-6. **Deploy smart contracts** (Polygon Mumbai testnet)
-7. **Configurar Chainlink subscription** (vrf.chain.link)
+1. ✅ **Webhook Chainlink VRF** - Implementado em `src/api/webhooks/chainlink/route.ts`
+2. ✅ **Endpoint de Teste** - Implementado em `src/api/admin/raffles/[id]/test-draw/route.ts`
+3. **Integrar services reais** nos subscribers (remover TODOs):
+   - Email service (SendGrid, Resend, etc.)
+   - Notification service (in-app)
+   - Customer service (dados do cliente)
+   - Task service (gerenciamento de entregas)
+4. **Deploy smart contracts** (Polygon Mumbai testnet):
+   - RaffleSystem.sol
+   - TicketNFT.sol (ERC-721)
+   - Integração Chainlink VRF
+5. **Configurar APIs externas**:
+   - Chainlink VRF subscription (vrf.chain.link)
+   - IPFS/Pinata (NFT metadata)
+   - Polygon RPC URL
+6. **Testes automatizados**:
+   - Unit tests (services)
+   - Integration tests (workflows)
+   - E2E tests (fluxo completo)
 
 ---
 
