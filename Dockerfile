@@ -43,7 +43,7 @@ COPY --from=dependencies /app/node_modules ./node_modules
 # Copiar arquivos de configuração
 COPY package*.json ./
 COPY tsconfig.json ./
-COPY medusa-config.ts ./
+COPY medusa-config.production.ts ./medusa-config.ts
 COPY jest.config.js ./
 COPY instrumentation.ts ./
 
