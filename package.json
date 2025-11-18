@@ -25,12 +25,13 @@
     "hardhat:deploy": "hardhat run scripts/deploy.ts"
   },
   "dependencies": {
+    "@chainlink/contracts": "^1.2.0",
     "@medusajs/admin-sdk": "2.11.3",
     "@medusajs/cli": "2.11.3",
     "@medusajs/framework": "2.11.3",
     "@medusajs/medusa": "2.11.3",
-    "@chainlink/contracts": "^1.2.0",
     "@openzeppelin/contracts": "^5.0.0",
+    "@vymalo/medusa-printful": "^1.0.10",
     "axios": "^1.7.0",
     "ethers": "^6.13.0",
     "mercadopago": "^2.0.0"

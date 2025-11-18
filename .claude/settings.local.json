@@ -114,7 +114,14 @@
       "Bash(then sed -i 's/dhiego@pagotto\\.eu/admin@example.com/g' \"$file\")",
       "Bash(fi)",
       "Bash(done)",
-      "Bash(for:*)"
+      "Bash(for:*)",
+      "Bash(git remote add:*)",
+      "Bash(git branch:*)",
+      "Bash(git push:*)",
+      "WebFetch(domain:www.npmjs.com)",
+      "Bash(npm view:*)",
+      "WebSearch",
+      "Bash(plugins/printful-hack/package.json)"
     ],
     "deny": [],
     "ask": []

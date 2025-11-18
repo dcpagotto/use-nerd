@@ -253,3 +253,8 @@ docs/.vuepress/dist/
 # Windows reserved device names (should never be tracked)
 nul
 NUL
+
+# ========================================
+# Plugin Workarounds
+# ========================================
+plugins/printful-hack/src/
