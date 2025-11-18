@@ -22,7 +22,6 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - usenerd-network
-      - network_public
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U usenerd"]
       interval: 10s
@@ -41,7 +40,6 @@ services:
       - redis_data:/data
     networks:
       - usenerd-network
-      - network_public
     healthcheck:
       test: ["CMD", "redis-cli", "--pass", "${REDIS_PASSWORD:-UsEN3rd_Redis_Prod_2025!}", "ping"]
       interval: 10s
@@ -81,10 +79,9 @@ services:
       - PORT=9000
     networks:
       - usenerd-network
-      - network_public
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=network_public"
+      - "traefik.docker.network=usenerd-network"
 
       # API Router (api.usenerd.com)
       - "traefik.http.routers.usenerd-api.rule=Host(`api.usenerd.com`)"
@@ -135,10 +132,9 @@ services:
       - STRAPI_URL=https://cms.usenerd.com
     networks:
       - usenerd-network
-      - network_public
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=network_public"
+      - "traefik.docker.network=usenerd-network"
 
       # CMS Router (cms.usenerd.com)
       - "traefik.http.routers.usenerd-cms.rule=Host(`cms.usenerd.com`)"
@@ -157,8 +153,6 @@ networks:
   usenerd-network:
     driver: bridge
     name: usenerd-network
-  network_public:
-    external: true
 
 # ============================================
 # Volumes
