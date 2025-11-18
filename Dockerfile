@@ -75,6 +75,9 @@ FROM dependencies AS builder
 # Copiar código fonte
 COPY . .
 
+# Use production config for build
+RUN cp medusa-config.production.ts medusa-config.ts 2>/dev/null || true
+
 # Build da aplicação
 RUN npm run build
 
@@ -98,7 +101,7 @@ RUN npm install --only=production --legacy-peer-deps && \
 # Copiar build artifacts
 COPY --from=builder /app/.medusa ./.medusa
 COPY --from=builder /app/dist ./dist
-COPY medusa-config.ts ./
+COPY medusa-config.production.ts ./medusa-config.ts
 
 # Criar usuário não-root
 RUN addgroup -g 1001 -S nodejs && \

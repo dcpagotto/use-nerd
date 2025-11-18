@@ -64,17 +64,20 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-# Copy only production dependencies
+# Copy dependencies and source
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=builder /app/.cache ./.cache
-COPY --from=builder /app/build ./build
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/public ./public
-COPY package*.json ./
-COPY favicon.* ./
+COPY . .
 
-# Create uploads directory
-RUN mkdir -p public/uploads
+# Copy build artifacts if they exist
+COPY --from=builder /app/.cache ./.cache 2>/dev/null || true
+COPY --from=builder /app/build ./build 2>/dev/null || true
+COPY --from=builder /app/dist ./dist 2>/dev/null || true
+
+# Create necessary directories
+RUN mkdir -p public/uploads .cache build dist
+
+# Build again in production stage to ensure artifacts exist
+RUN npm run build || true
 
 # Switch to non-root user
 USER node

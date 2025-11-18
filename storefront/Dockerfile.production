@@ -39,6 +39,9 @@ COPY . .
 # Set environment variables for build
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
+ENV NEXT_PUBLIC_MEDUSA_BACKEND_URL=https://api.usenerd.com
+ENV NEXT_PUBLIC_BASE_URL=https://usenerd.com
+ENV NEXT_PUBLIC_STRAPI_URL=https://cms.usenerd.com
 
 # Build Next.js application
 RUN npm run build

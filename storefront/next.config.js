@@ -102,13 +102,16 @@ const nextConfig = {
 
   // Rewrites for API proxying if needed
   async rewrites() {
-    return [
-      // Proxy Medusa API calls to avoid CORS issues
-      {
-        source: '/api/medusa/:path*',
-        destination: `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/:path*`,
-      },
-    ];
+    // Only add rewrites if backend URL is defined
+    if (process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL) {
+      return [
+        {
+          source: '/api/medusa/:path*',
+          destination: `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/:path*`,
+        },
+      ];
+    }
+    return [];
   },
 };
 
