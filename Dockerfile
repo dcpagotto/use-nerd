@@ -43,12 +43,14 @@ COPY --from=dependencies /app/node_modules ./node_modules
 # Copiar arquivos de configuração
 COPY package*.json ./
 COPY tsconfig.json ./
-COPY medusa-config.production.ts ./medusa-config.ts
 COPY jest.config.js ./
 COPY instrumentation.ts ./
 
 # Copiar código fonte (será sobrescrito pelo volume em desenvolvimento)
 COPY . .
+
+# Sobrescrever com production config (AFTER copying all files)
+RUN cp medusa-config.production.ts medusa-config.ts
 
 # Criar diretórios necessários com permissões corretas
 RUN mkdir -p /app/.medusa/client /app/.medusa/server && \
