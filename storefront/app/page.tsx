@@ -1,265 +1,243 @@
-'use client';
+/**
+ * Homepage - Integrated with Strapi CMS
+ * Fetches banners and hero section from Strapi
+ */
 
-import useCartStore from '@/store/cart-store';
-import LoadingSpinner from '@/components/LoadingSpinner';
+import Link from 'next/link';
+import Image from 'next/image';
+import { getHeroSection, getBanners } from '@/lib/strapi-client';
+import { getStrapiMediaObjectUrl, getStrapiMediaAlt } from '@/lib/strapi-utils';
 
-export default function Home() {
-  const { addItem, getTotalItems } = useCartStore();
+async function fetchHomepageData() {
+  try {
+    const [heroRes, bannersRes] = await Promise.all([
+      getHeroSection('pt-BR', 60),
+      getBanners('homepage', true, 'pt-BR', 60),
+    ]);
 
-  // Produtos de exemplo para demonstração
-  const exampleProducts = [
-    {
-      id: 'product-1',
-      title: 'Camiseta Cyberpunk Neon',
-      price: 7999, // R$ 79,99 em centavos
-      thumbnail: '',
-      description: 'Camiseta premium com estampa neon cyberpunk',
-    },
-    {
-      id: 'product-2',
-      title: 'Moletom Tech Glow',
-      price: 15999, // R$ 159,99
-      thumbnail: '',
-      description: 'Moletom com detalhes luminosos',
-    },
-    {
-      id: 'product-3',
-      title: 'Boné Matrix Style',
-      price: 5999, // R$ 59,99
-      thumbnail: '',
-      description: 'Boné estilo Matrix com bordado exclusivo',
-    },
-  ];
+    return {
+      hero: heroRes?.data,
+      banners: bannersRes?.data || [],
+      error: null,
+    };
+  } catch (error) {
+    console.error('Error fetching homepage data:', error);
+    return {
+      hero: null,
+      banners: [],
+      error: error instanceof Error ? error.message : 'Failed to fetch homepage data',
+    };
+  }
+}
 
-  const handleAddToCart = (product: any) => {
-    addItem({
-      id: product.id,
-      title: product.title,
-      price: product.price,
-      thumbnail: product.thumbnail,
-    });
-  };
-
-  const formatPrice = (priceInCents: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-    }).format(priceInCents / 100);
-  };
+export default async function HomePage() {
+  const { hero, banners } = await fetchHomepageData();
 
   return (
-    <main className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-cyber-dark-200 via-cyber-dark-100 to-cyber-dark-200 py-20 lg:py-32">
-        {/* Background grid effect */}
-        <div className="absolute inset-0 bg-grid-cyber bg-grid-md opacity-20" />
+    <main className="min-h-screen bg-black">
+      {/* Hero Section - Cyberpunk Theme with Strapi Data */}
+      <section className="relative h-[600px] overflow-hidden bg-gradient-to-b from-purple-900/20 via-black to-black">
+        {/* Grid Background */}
+        <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-10" />
 
-        <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-4xl text-center">
-            <h1 className="neon-text-purple font-display text-display-2 lg:text-display-1 mb-6 animate-fade-in">
-              USE Nerd
+        {/* Scan-line Animation */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-500/5 to-transparent animate-scan-line" />
+
+        {/* Background Image from Strapi (if available) */}
+        {hero?.attributes?.backgroundImage && (
+          <Image
+            src={getStrapiMediaObjectUrl(
+              hero.attributes.backgroundImage,
+              'medium'
+            ) || ''}
+            alt="Hero Background"
+            fill
+            className="object-cover opacity-20"
+            priority
+          />
+        )}
+
+        <div className="relative z-10 container mx-auto px-4 h-full flex items-center justify-center text-center">
+          <div className="max-w-4xl">
+            {/* Title with Neon Glow */}
+            <h1 className="text-6xl md:text-7xl font-black mb-6 uppercase tracking-wider">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-blue-500 animate-pulse-slow">
+                {hero?.attributes?.title || 'USE Nerd'}
+              </span>
             </h1>
-            <p className="text-gradient-cyber mb-4 text-2xl font-bold lg:text-3xl">
-              E-commerce com Rifas Blockchain
-            </p>
-            <p className="mx-auto mb-10 max-w-2xl text-lg text-gray-cyber-300">
-              Plataforma de e-commerce com sistema de rifas transparentes verificadas por blockchain
-              na rede Polygon. Compre, participe e ganhe com total segurança.
+
+            <p className="text-xl md:text-2xl mb-8 text-gray-300 font-light">
+              {hero?.attributes?.subtitle || 'E-commerce com Rifas Blockchain Verificáveis'}
             </p>
 
-            <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <button className="btn-neon-filled-purple text-lg">
-                Explorar Produtos
-              </button>
-              <button className="btn-neon-blue text-lg">
-                Ver Rifas Ativas
-              </button>
-            </div>
+            {/* CTA Button */}
+            <Link
+              href="/produtos"
+              className="group inline-block relative"
+            >
+              <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
+              <div className="relative px-8 py-4 bg-black rounded-lg border border-purple-500 group-hover:border-pink-500 transition-all duration-300">
+                <span className="text-lg font-bold uppercase tracking-wider text-purple-400 group-hover:text-pink-400 transition-colors">
+                  {hero?.attributes?.ctaText || 'Explorar Produtos'}
+                </span>
+              </div>
+            </Link>
           </div>
         </div>
 
-        {/* Decorative glow effect */}
-        <div className="absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-neon-purple/20 blur-3xl" />
+        {/* Bottom Gradient */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black to-transparent" />
       </section>
+
+      {/* Banners Section from Strapi */}
+      {banners && banners.length > 0 && (
+        <section className="py-12 bg-black">
+          <div className="container mx-auto px-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {banners.map((banner) => {
+                const bannerImageUrl = getStrapiMediaObjectUrl(
+                  banner.attributes?.image,
+                  'medium'
+                );
+                const bannerAlt = getStrapiMediaAlt(
+                  banner.attributes?.image,
+                  banner.attributes?.title || 'Banner'
+                );
+
+                return (
+                  <Link
+                    key={banner.id}
+                    href={banner.attributes?.link || '#'}
+                    className="group relative overflow-hidden rounded-lg border-2 border-zinc-800 hover:border-purple-500 transition-all duration-300"
+                  >
+                    {bannerImageUrl ? (
+                      <Image
+                        src={bannerImageUrl}
+                        alt={bannerAlt}
+                        width={400}
+                        height={300}
+                        className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300"
+                      />
+                    ) : (
+                      <div className="w-full h-64 bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
+                        <p className="text-white text-center px-4">
+                          {banner.attributes?.title || 'Banner'}
+                        </p>
+                      </div>
+                    )}
+                    {banner.attributes?.title && (
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end">
+                        <p className="p-4 text-white font-bold">
+                          {banner.attributes.title}
+                        </p>
+                      </div>
+                    )}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Features Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="neon-text-purple mb-12 text-center font-display text-heading-1">
-            Por que escolher USE Nerd?
-          </h2>
-
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            <div className="card-cyber-glow group p-8 text-center">
-              <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-cyber bg-gradient-cyber shadow-neon-purple-sm transition-shadow group-hover:shadow-neon-purple">
-                <svg
-                  className="h-8 w-8 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                  />
-                </svg>
-              </div>
-              <h3 className="mb-2 text-xl font-semibold text-white">E-commerce Completo</h3>
-              <p className="text-gray-cyber-300">
-                Loja online completa com produtos exclusivos, checkout seguro e entrega nacional.
-              </p>
-            </div>
-
-            <div className="card-cyber-glow group p-8 text-center">
-              <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-cyber bg-gradient-cyber-reverse shadow-neon-blue-sm transition-shadow group-hover:shadow-neon-blue">
-                <svg
-                  className="h-8 w-8 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                  />
-                </svg>
-              </div>
-              <h3 className="mb-2 text-xl font-semibold text-white">Rifas Blockchain</h3>
-              <p className="text-gray-cyber-300">
-                Sistema de rifas transparente e verificável na blockchain Polygon. 100% auditável.
-              </p>
-            </div>
-
-            <div className="card-cyber-glow group p-8 text-center">
-              <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-cyber bg-gradient-neon shadow-neon-pink transition-shadow group-hover:shadow-neon-pink">
-                <svg
-                  className="h-8 w-8 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
-                  />
-                </svg>
-              </div>
-              <h3 className="mb-2 text-xl font-semibold text-white">Pagamentos BR</h3>
-              <p className="text-gray-cyber-300">
-                PIX instantâneo, Mercado Pago e emissão automática de NFe. Pagamento facilitado.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Demo Products Section */}
-      <section className="bg-cyber-dark-100 py-20">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-12 text-center">
-            <h2 className="neon-text-purple mb-4 font-display text-heading-1">
-              Produtos em Destaque
+      <section className="py-20 bg-black">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-black uppercase tracking-wider mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-blue-400">
+              Por que USE Nerd?
             </h2>
-            <p className="text-gray-cyber-300">
-              Exemplos de produtos - clique para adicionar ao carrinho e testar o sistema
-            </p>
+            <div className="h-1 w-32 mx-auto mt-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full" />
           </div>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {exampleProducts.map((product) => (
-              <div key={product.id} className="card-cyber-glow group p-6">
-                {/* Product image placeholder */}
-                <div className="mb-4 flex aspect-square items-center justify-center rounded-cyber bg-gradient-to-br from-neon-purple/20 to-neon-blue/20">
-                  <svg
-                    className="h-24 w-24 text-neon-purple/40"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1}
-                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
-                </div>
-
-                {/* Product info */}
-                <h3 className="mb-2 text-xl font-semibold text-white">{product.title}</h3>
-                <p className="mb-4 text-sm text-gray-cyber-300">{product.description}</p>
-
-                <div className="mb-4 flex items-baseline gap-2">
-                  <span className="neon-text-purple text-2xl font-bold">
-                    {formatPrice(product.price)}
-                  </span>
-                </div>
-
-                <button
-                  onClick={() => handleAddToCart(product)}
-                  className="btn-neon-filled-purple w-full"
-                >
-                  Adicionar ao Carrinho
-                </button>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+            {/* Feature 1 */}
+            <div className="group relative bg-zinc-900 rounded-lg overflow-hidden border-2 border-zinc-800 hover:border-purple-500 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-[0_0_40px_rgba(168,85,247,0.4)] p-8 text-center">
+              <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-purple-600 to-pink-600 shadow-lg">
+                <svg className="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
               </div>
-            ))}
-          </div>
+              <h3 className="mb-2 text-xl font-bold text-white group-hover:text-purple-400 transition-colors">E-commerce Completo</h3>
+              <p className="text-gray-400">
+                Loja online completa com produtos, carrinho e checkout integrado
+              </p>
+            </div>
 
-          {/* Cart info */}
-          <div className="mt-10 text-center">
-            <p className="text-gray-cyber-400">
-              Itens no carrinho: <span className="neon-text-purple font-bold">{getTotalItems()}</span>
-            </p>
-            <p className="mt-2 text-sm text-gray-cyber-500">
-              Clique no ícone do carrinho no header para ver os itens
-            </p>
+            {/* Feature 2 */}
+            <div className="group relative bg-zinc-900 rounded-lg overflow-hidden border-2 border-zinc-800 hover:border-pink-500 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-[0_0_40px_rgba(236,72,153,0.4)] p-8 text-center">
+              <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-pink-600 to-purple-600 shadow-lg">
+                <svg className="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="mb-2 text-xl font-bold text-white group-hover:text-pink-400 transition-colors">Rifas Blockchain</h3>
+              <p className="text-gray-400">
+                Sorteios transparentes verificados na blockchain Polygon
+              </p>
+            </div>
+
+            {/* Feature 3 */}
+            <div className="group relative bg-zinc-900 rounded-lg overflow-hidden border-2 border-zinc-800 hover:border-blue-500 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-[0_0_40px_rgba(59,130,246,0.4)] p-8 text-center">
+              <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-purple-600 shadow-lg">
+                <svg className="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </div>
+              <h3 className="mb-2 text-xl font-bold text-white group-hover:text-blue-400 transition-colors">Totalmente Seguro</h3>
+              <p className="text-gray-400">
+                Pagamentos seguros via PIX e Crypto com verificação blockchain
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="relative overflow-hidden py-20">
-        <div className="absolute inset-0 bg-gradient-cyber opacity-10" />
+      <section className="py-20 bg-gradient-to-b from-black via-purple-900/10 to-black">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-4xl md:text-5xl font-black mb-6 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">
+            Pronto para Começar?
+          </h2>
+          <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+            Explore nossos produtos ou participe das rifas blockchain com total transparência
+          </p>
 
-        <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="card-cyber-glow mx-auto max-w-3xl p-12 text-center">
-            <h2 className="neon-text-purple mb-4 font-display text-heading-1">
-              Pronto para começar?
-            </h2>
-            <p className="mb-8 text-lg text-gray-cyber-300">
-              Conecte sua carteira Web3 e participe das rifas verificadas por blockchain
-            </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Link
+              href="/produtos"
+              className="group relative inline-block"
+            >
+              <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
+              <div className="relative px-8 py-4 bg-black rounded-lg border border-purple-500 group-hover:border-pink-500 transition-all duration-300">
+                <span className="text-lg font-bold uppercase tracking-wider text-purple-400 group-hover:text-pink-400 transition-colors">
+                  Ver Produtos
+                </span>
+              </div>
+            </Link>
 
-            <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-              <button className="btn-neon-filled-purple text-lg">
-                Conectar Carteira
-              </button>
-              <button className="btn-neon-blue text-lg">
-                Saiba Mais
-              </button>
-            </div>
-
-            {/* Tech stack badge */}
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-              <span className="rounded-cyber border border-neon-purple/30 bg-neon-purple/5 px-4 py-2 text-sm font-semibold text-neon-purple">
-                Next.js 14
-              </span>
-              <span className="rounded-cyber border border-neon-blue/30 bg-neon-blue/5 px-4 py-2 text-sm font-semibold text-neon-blue">
-                Polygon
-              </span>
-              <span className="rounded-cyber border border-neon-pink/30 bg-neon-pink/5 px-4 py-2 text-sm font-semibold text-neon-pink">
-                Medusa v2
-              </span>
-            </div>
+            <Link
+              href="/rifas"
+              className="group relative inline-block"
+            >
+              <div className="absolute -inset-1 bg-gradient-to-r from-pink-600 to-blue-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
+              <div className="relative px-8 py-4 bg-black rounded-lg border border-pink-500 group-hover:border-blue-500 transition-all duration-300">
+                <span className="text-lg font-bold uppercase tracking-wider text-pink-400 group-hover:text-blue-400 transition-colors">
+                  Ver Rifas
+                </span>
+              </div>
+            </Link>
           </div>
         </div>
       </section>
     </main>
   );
+}
+
+// SEO Metadata
+export async function generateMetadata() {
+  return {
+    title: 'USE Nerd - E-commerce com Rifas Blockchain',
+    description: 'E-commerce completo com sistema de rifas verificado na blockchain Polygon. Transparência total nos sorteios.',
+  };
 }

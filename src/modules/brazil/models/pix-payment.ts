@@ -32,11 +32,6 @@ const PixPayment = model.define("pix_payment", {
 
   // Metadata
   metadata: model.json().nullable(),
-
-  // Timestamps
-  created_at: model.dateTime().default("now"),
-  updated_at: model.dateTime().default("now"),
-  deleted_at: model.dateTime().nullable(),
 })
   .indexes([
     {

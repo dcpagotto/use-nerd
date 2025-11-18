@@ -36,11 +36,6 @@ const ShippingQuote = model.define("shipping_quote", {
 
   // Metadata (dados do Melhor Envio)
   metadata: model.json().nullable(),
-
-  // Timestamps
-  created_at: model.dateTime().default("now"),
-  updated_at: model.dateTime().default("now"),
-  deleted_at: model.dateTime().nullable(),
 })
   .indexes([
     {

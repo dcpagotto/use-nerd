@@ -30,6 +30,109 @@ export enum DrawStatus {
   FAILED = "failed",
 }
 
+export enum ProductType {
+  COMPUTER = "computer",
+  CAR = "car",
+  MOTORCYCLE = "motorcycle",
+  ELECTRONICS = "electronics",
+  APPLIANCE = "appliance",
+  CASH = "cash",
+  TRAVEL = "travel",
+  OTHER = "other",
+}
+
+// ============================================
+// Product Specifications Types
+// ============================================
+
+export interface ComputerSpecs {
+  brand: string;
+  model: string;
+  processor: string;
+  ram: string; // Ex: "16GB DDR4"
+  storage: string; // Ex: "512GB SSD"
+  gpu?: string; // Ex: "NVIDIA RTX 3060"
+  screen_size?: string; // Ex: "15.6 polegadas"
+  operating_system?: string; // Ex: "Windows 11 Pro"
+  warranty_months?: number;
+  condition: "new" | "refurbished" | "used";
+}
+
+export interface CarSpecs {
+  brand: string; // Ex: "Toyota", "Honda"
+  model: string; // Ex: "Corolla", "Civic"
+  year: number; // Ex: 2024
+  color: string; // Ex: "Prata", "Preto"
+  mileage: number; // Ex: 0 (zero km) ou 15000
+  fuel_type: "gasoline" | "ethanol" | "flex" | "diesel" | "electric" | "hybrid";
+  transmission: "manual" | "automatic" | "cvt";
+  doors: number; // Ex: 4
+  engine: string; // Ex: "1.8L 4 cilindros"
+  features?: string[]; // Ex: ["Ar condicionado", "Direção elétrica", "Vidros elétricos"]
+  license_plate?: string; // Ex: "ABC-1234"
+  chassis_number?: string;
+  condition: "new" | "used";
+}
+
+export interface MotorcycleSpecs {
+  brand: string; // Ex: "Honda", "Yamaha"
+  model: string; // Ex: "CB 500X", "MT-03"
+  year: number;
+  color: string;
+  mileage: number;
+  engine_displacement: string; // Ex: "500cc"
+  fuel_type: "gasoline" | "ethanol" | "flex";
+  features?: string[];
+  license_plate?: string;
+  condition: "new" | "used";
+}
+
+export interface ElectronicsSpecs {
+  category: "smartphone" | "tablet" | "tv" | "console" | "camera" | "audio" | "other";
+  brand: string;
+  model: string;
+  specifications?: Record<string, any>; // Flexible para diferentes tipos
+  warranty_months?: number;
+  condition: "new" | "refurbished" | "used";
+}
+
+export interface ApplianceSpecs {
+  category: "refrigerator" | "washer" | "dryer" | "oven" | "microwave" | "dishwasher" | "other";
+  brand: string;
+  model: string;
+  capacity?: string; // Ex: "400L", "10kg"
+  energy_rating?: string; // Ex: "A+++", "Inverter"
+  warranty_months?: number;
+  condition: "new" | "used";
+}
+
+export interface CashSpecs {
+  amount: number; // Valor em centavos
+  currency: "BRL" | "USD" | "EUR";
+  payment_method: "pix" | "bank_transfer" | "check";
+  transfer_details?: string;
+}
+
+export interface TravelSpecs {
+  destination: string; // Ex: "Paris, França"
+  duration_days: number; // Ex: 7
+  accommodation?: string; // Ex: "Hotel 5 estrelas"
+  includes?: string[]; // Ex: ["Passagens aéreas", "Hotel", "Café da manhã"]
+  participants: number; // Ex: 2 pessoas
+  valid_until?: Date;
+  restrictions?: string;
+}
+
+export type ProductSpecifications =
+  | ComputerSpecs
+  | CarSpecs
+  | MotorcycleSpecs
+  | ElectronicsSpecs
+  | ApplianceSpecs
+  | CashSpecs
+  | TravelSpecs
+  | Record<string, any>; // Para OTHER
+
 // ============================================
 // DTOs - Data Transfer Objects
 // ============================================
@@ -48,6 +151,15 @@ export interface CreateRaffleDTO {
   image_url?: string;
   terms_and_conditions?: string;
   product_id?: string;
+
+  // Product Type and Specifications
+  product_type: ProductType;
+  product_specifications: ProductSpecifications;
+  supplier_name?: string;
+  supplier_contact?: string;
+  delivery_type?: "pickup" | "shipping" | "digital" | "transfer";
+  delivery_estimate_days?: number;
+
   metadata?: Record<string, any>;
 }
 
@@ -62,6 +174,15 @@ export interface UpdateRaffleDTO {
   draw_date?: Date;
   image_url?: string;
   terms_and_conditions?: string;
+
+  // Product Type and Specifications
+  product_type?: ProductType;
+  product_specifications?: ProductSpecifications;
+  supplier_name?: string;
+  supplier_contact?: string;
+  delivery_type?: "pickup" | "shipping" | "digital" | "transfer";
+  delivery_estimate_days?: number;
+
   metadata?: Record<string, any>;
 }
 

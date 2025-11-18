@@ -1,0 +1,101 @@
+[34mdebug[39m:   registering route POST /admin/exchanges/:id/request
+[34mdebug[39m:   registering route DELETE /admin/exchanges/:id/request
+[34mdebug[39m:   registering route middleware POST /admin/exchanges/:id/inbound/items
+[34mdebug[39m:   registering route middleware POST /admin/exchanges/:id/inbound/items
+[34mdebug[39m:   registering route middleware POST /admin/exchanges/:id/inbound/shipping-method
+[34mdebug[39m:   registering route middleware POST /admin/exchanges/:id/inbound/shipping-method
+[34mdebug[39m:   registering route POST /admin/exchanges/:id/inbound/items
+[34mdebug[39m:   registering route POST /admin/exchanges/:id/inbound/shipping-method
+[34mdebug[39m:   registering route middleware POST /admin/exchanges/:id/inbound/items/:action_id
+[34mdebug[39m:   registering route middleware POST /admin/exchanges/:id/inbound/items/:action_id
+[34mdebug[39m:   registering route middleware DELETE /admin/exchanges/:id/inbound/items/:action_id
+[34mdebug[39m:   registering route POST /admin/exchanges/:id/inbound/items/:action_id
+[34mdebug[39m:   registering route DELETE /admin/exchanges/:id/inbound/items/:action_id
+[34mdebug[39m:   registering route middleware POST /admin/exchanges/:id/inbound/shipping-method/:action_id
+[34mdebug[39m:   registering route middleware POST /admin/exchanges/:id/inbound/shipping-method/:action_id
+[34mdebug[39m:   registering route middleware DELETE /admin/exchanges/:id/inbound/shipping-method/:action_id
+[34mdebug[39m:   registering route POST /admin/exchanges/:id/inbound/shipping-method/:action_id
+[34mdebug[39m:   registering route DELETE /admin/exchanges/:id/inbound/shipping-method/:action_id
+[34mdebug[39m:   registering route middleware POST /admin/exchanges/:id/outbound/items
+[34mdebug[39m:   registering route middleware POST /admin/exchanges/:id/outbound/items
+[34mdebug[39m:   registering route middleware POST /admin/exchanges/:id/outbound/shipping-method
+[34mdebug[39m:   registering route middleware POST /admin/exchanges/:id/outbound/shipping-method
+[34mdebug[39m:   registering route POST /admin/exchanges/:id/outbound/items
+[34mdebug[39m:   registering route POST /admin/exchanges/:id/outbound/shipping-method
+[34mdebug[39m:   registering route middleware POST /admin/exchanges/:id/outbound/items/:action_id
+[34mdebug[39m:   registering route middleware POST /admin/exchanges/:id/outbound/items/:action_id
+[34mdebug[39m:   registering route middleware DELETE /admin/exchanges/:id/outbound/items/:action_id
+[34mdebug[39m:   registering route POST /admin/exchanges/:id/outbound/items/:action_id
+[34mdebug[39m:   registering route DELETE /admin/exchanges/:id/outbound/items/:action_id
+[34mdebug[39m:   registering route middleware POST /admin/exchanges/:id/outbound/shipping-method/:action_id
+[34mdebug[39m:   registering route middleware POST /admin/exchanges/:id/outbound/shipping-method/:action_id
+[34mdebug[39m:   registering route middleware DELETE /admin/exchanges/:id/outbound/shipping-method/:action_id
+[34mdebug[39m:   registering route POST /admin/exchanges/:id/outbound/shipping-method/:action_id
+[34mdebug[39m:   registering route DELETE /admin/exchanges/:id/outbound/shipping-method/:action_id
+[34mdebug[39m:   registering route DELETE /admin/order-edits/:id
+[34mdebug[39m:   registering route middleware POST /admin/order-edits/:id/items
+[34mdebug[39m:   registering route middleware POST /admin/order-edits/:id/shipping-method
+[34mdebug[39m:   registering route POST /admin/order-edits/:id/confirm
+[34mdebug[39m:   registering route POST /admin/order-edits/:id/items
+[34mdebug[39m:   registering route POST /admin/order-edits/:id/request
+[34mdebug[39m:   registering route POST /admin/order-edits/:id/shipping-method
+[34mdebug[39m:   registering route middleware POST /admin/order-edits/:id/items/item/:item_id
+[34mdebug[39m:   registering route POST /admin/order-edits/:id/items/item/:item_id
+[34mdebug[39m:   registering route middleware POST /admin/order-edits/:id/items/:action_id
+[34mdebug[39m:   registering route POST /admin/order-edits/:id/items/:action_id
+[34mdebug[39m:   registering route DELETE /admin/order-edits/:id/items/:action_id
+[34mdebug[39m:   registering route middleware POST /admin/order-edits/:id/shipping-method/:action_id
+[34mdebug[39m:   registering route POST /admin/order-edits/:id/shipping-method/:action_id
+[34mdebug[39m:   registering route DELETE /admin/order-edits/:id/shipping-method/:action_id
+[34mdebug[39m:   registering route DELETE /admin/payment-collections/:id
+[34mdebug[39m:   registering route middleware POST /admin/payment-collections/:id/mark-as-paid
+[34mdebug[39m:   registering route middleware POST /admin/payment-collections/:id/mark-as-paid
+[34mdebug[39m:   registering route POST /admin/payment-collections/:id/mark-as-paid
+[34mdebug[39m:   registering route middleware GET /admin/views/:entity/configurations
+[34mdebug[39m:   registering route middleware POST /admin/views/:entity/configurations
+[34mdebug[39m:   registering route middleware GET /admin/views/:entity/columns
+[34mdebug[39m:   registering route GET /admin/views/:entity/columns
+[34mdebug[39m:   registering route GET /admin/views/:entity/configurations
+[34mdebug[39m:   registering route POST /admin/views/:entity/configurations
+[34mdebug[39m:   registering route middleware GET /admin/views/:entity/configurations/active
+[34mdebug[39m:   registering route middleware POST /admin/views/:entity/configurations/active
+[34mdebug[39m:   registering route GET /admin/views/:entity/configurations/active
+[34mdebug[39m:   registering route POST /admin/views/:entity/configurations/active
+[34mdebug[39m:   registering route middleware GET /admin/views/:entity/configurations/:id
+[34mdebug[39m:   registering route middleware POST /admin/views/:entity/configurations/:id
+[34mdebug[39m:   registering route GET /admin/views/:entity/configurations/:id
+[34mdebug[39m:   registering route POST /admin/views/:entity/configurations/:id
+[34mdebug[39m:   registering route DELETE /admin/views/:entity/configurations/:id
+[34mdebug[39m:   registering route GET /admin/fulfillment-providers/:id/options
+[34mdebug[39m:   registering route GET /admin/raffles/:id/test-draw
+[34mdebug[39m:   registering route POST /admin/raffles/:id/test-draw
+[34mdebug[39m:   registering route middleware POST /auth/session
+[34mdebug[39m:   registering route middleware DELETE /auth/session
+[34mdebug[39m:   registering route POST /auth/session
+[34mdebug[39m:   registering route DELETE /auth/session
+[34mdebug[39m:   registering route middleware POST /auth/token/refresh
+[34mdebug[39m:   registering route POST /auth/token/refresh
+[34mdebug[39m:   registering route POST /hooks/payment/:provider
+[34mdebug[39m:   registering route GET /webhooks/chainlink
+[34mdebug[39m:   registering route POST /webhooks/chainlink
+[34mdebug[39m:   registering route middleware POST /auth/:actor_type/:auth_provider
+[34mdebug[39m:   registering route middleware GET /auth/:actor_type/:auth_provider
+[34mdebug[39m:   registering route GET /auth/:actor_type/:auth_provider
+[34mdebug[39m:   registering route POST /auth/:actor_type/:auth_provider
+[34mdebug[39m:   registering route middleware POST /auth/:actor_type/:auth_provider/callback
+[34mdebug[39m:   registering route middleware POST /auth/:actor_type/:auth_provider/register
+[34mdebug[39m:   registering route middleware POST /auth/:actor_type/:auth_provider/reset-password
+[34mdebug[39m:   registering route middleware POST /auth/:actor_type/:auth_provider/reset-password
+[34mdebug[39m:   registering route middleware POST /auth/:actor_type/:auth_provider/update
+[34mdebug[39m:   registering route middleware POST /auth/:actor_type/:auth_provider/update
+[34mdebug[39m:   registering route GET /auth/:actor_type/:auth_provider/callback
+[34mdebug[39m:   registering route POST /auth/:actor_type/:auth_provider/callback
+[34mdebug[39m:   registering route POST /auth/:actor_type/:auth_provider/register
+[34mdebug[39m:   registering route POST /auth/:actor_type/:auth_provider/reset-password
+[34mdebug[39m:   registering route POST /auth/:actor_type/:auth_provider/update
+[34mdebug[39m:   Generated container types
+[34mdebug[39m:   Generated modules types
+[?25l[36m⠋[39m Creating server[2K[1G[?25h[32m✔[39m Server is ready on port: 1337 – 51ms
+[32minfo[39m:    Admin URL → http://0.0.0.0:1337/app
+[32minfo[39m:    Watching filesystem to reload dev server on file change
+

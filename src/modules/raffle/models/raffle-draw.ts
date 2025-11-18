@@ -27,10 +27,6 @@ const RaffleDraw = model.define("raffle_draw", {
   drawn_at: model.dateTime().default("now"),
   executed_by: model.text(), // User ID do admin
   metadata: model.json().nullable(),
-
-  // Timestamps
-  created_at: model.dateTime().default("now"),
-  updated_at: model.dateTime().default("now"),
 })
   .indexes([
     {

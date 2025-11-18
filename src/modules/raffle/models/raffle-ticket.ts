@@ -31,11 +31,6 @@ const RaffleTicket = model.define("raffle_ticket", {
   // Pagamento
   paid_at: model.dateTime().nullable(),
   price_paid: model.number(), // Em centavos
-
-  // Timestamps
-  created_at: model.dateTime().default("now"),
-  updated_at: model.dateTime().default("now"),
-  deleted_at: model.dateTime().nullable(),
 })
   .indexes([
     {

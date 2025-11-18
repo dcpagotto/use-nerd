@@ -1,166 +1,220 @@
 import { ethers } from 'ethers';
 
 /**
- * Web3 Client Configuration for Polygon Network
+ * Web3 Client - READ-ONLY MODE (Phase 5)
  *
- * This client handles blockchain interactions for raffle verification
- * and smart contract operations on Polygon (Matic) network.
+ * This client is used ONLY for blockchain audit and verification.
+ * Users DO NOT connect their wallets. Crypto payments are handled
+ * by payment gateways (Coinbase Commerce, BitPay, etc.).
+ *
+ * The blockchain is used for:
+ * - Verifying raffle registrations on-chain
+ * - Auditing raffle draws (Chainlink VRF)
+ * - Viewing transaction history
+ * - Public transparency and trust
  */
 
-const POLYGON_RPC_URL = process.env.NEXT_PUBLIC_POLYGON_RPC_URL || 'https://polygon-rpc.com';
-const POLYGON_CHAIN_ID = process.env.NEXT_PUBLIC_POLYGON_CHAIN_ID || '137'; // Polygon Mainnet
+const POLYGON_RPC_URL =
+  process.env.NEXT_PUBLIC_POLYGON_RPC_URL || 'https://polygon-rpc.com';
 
-// Network configurations
-export const NETWORKS = {
-  polygon: {
-    chainId: '0x89', // 137 in hex
-    chainName: 'Polygon Mainnet',
-    nativeCurrency: {
-      name: 'MATIC',
-      symbol: 'MATIC',
-      decimals: 18,
-    },
-    rpcUrls: [POLYGON_RPC_URL],
-    blockExplorerUrls: ['https://polygonscan.com/'],
+/**
+ * Network configuration for Polygon Mainnet
+ */
+export const POLYGON_NETWORK = {
+  chainId: 137,
+  chainName: 'Polygon Mainnet',
+  nativeCurrency: {
+    name: 'MATIC',
+    symbol: 'MATIC',
+    decimals: 18,
   },
-  mumbai: {
-    chainId: '0x13881', // 80001 in hex
-    chainName: 'Polygon Mumbai Testnet',
-    nativeCurrency: {
-      name: 'MATIC',
-      symbol: 'MATIC',
-      decimals: 18,
-    },
-    rpcUrls: ['https://rpc-mumbai.maticvigil.com/'],
-    blockExplorerUrls: ['https://mumbai.polygonscan.com/'],
-  },
+  rpcUrl: POLYGON_RPC_URL,
+  blockExplorerUrl: 'https://polygonscan.com/',
 };
 
 /**
  * Get read-only provider for blockchain queries
+ * This is the ONLY provider we use - NO wallet connection!
  */
 export function getProvider(): ethers.JsonRpcProvider {
   return new ethers.JsonRpcProvider(POLYGON_RPC_URL);
 }
 
 /**
- * Get browser provider (MetaMask, WalletConnect, etc.)
+ * Get read-only contract instance for audit purposes
  */
-export async function getBrowserProvider(): Promise<ethers.BrowserProvider | null> {
-  if (typeof window === 'undefined' || !window.ethereum) {
-    console.warn('No Web3 provider found. Please install MetaMask.');
-    return null;
-  }
-
-  return new ethers.BrowserProvider(window.ethereum);
-}
-
-/**
- * Connect to user's wallet
- */
-export async function connectWallet(): Promise<string | null> {
-  try {
-    const provider = await getBrowserProvider();
-    if (!provider) {
-      throw new Error('No Web3 provider available');
-    }
-
-    // Request account access
-    const accounts = await provider.send('eth_requestAccounts', []);
-
-    // Check if we're on the correct network
-    const network = await provider.getNetwork();
-    if (network.chainId !== BigInt(POLYGON_CHAIN_ID)) {
-      await switchToPolygon();
-    }
-
-    return accounts[0] || null;
-  } catch (error) {
-    console.error('Error connecting wallet:', error);
-    throw error;
-  }
-}
-
-/**
- * Switch to Polygon network
- */
-export async function switchToPolygon(): Promise<void> {
-  if (typeof window === 'undefined' || !window.ethereum) {
-    throw new Error('No Web3 provider available');
-  }
-
-  const networkConfig = NETWORKS.polygon;
-
-  try {
-    // Try to switch to Polygon network
-    await window.ethereum.request({
-      method: 'wallet_switchEthereumChain',
-      params: [{ chainId: networkConfig.chainId }],
-    });
-  } catch (switchError: any) {
-    // This error code indicates that the chain has not been added to MetaMask
-    if (switchError.code === 4902) {
-      try {
-        await window.ethereum.request({
-          method: 'wallet_addEthereumChain',
-          params: [networkConfig],
-        });
-      } catch (addError) {
-        console.error('Error adding Polygon network:', addError);
-        throw addError;
-      }
-    } else {
-      console.error('Error switching to Polygon network:', switchError);
-      throw switchError;
-    }
-  }
-}
-
-/**
- * Get contract instance
- */
-export async function getContract(
+export function getContract(
   address: string,
-  abi: any[],
-  signer?: ethers.Signer
-): Promise<ethers.Contract> {
-  const provider = signer ? await getBrowserProvider() : getProvider();
-
-  if (!provider) {
-    throw new Error('No provider available');
-  }
-
-  if (signer) {
-    return new ethers.Contract(address, abi, signer);
-  }
-
+  abi: any[]
+): ethers.Contract {
+  const provider = getProvider();
   return new ethers.Contract(address, abi, provider);
 }
 
 /**
- * Verify raffle on blockchain
+ * Verify raffle registration on blockchain
+ * Used by the frontend to show "Verified on Blockchain" badge
  */
-export async function verifyRaffleOnChain(raffleId: string, contractAddress: string, abi: any[]) {
+export async function verifyRaffleOnChain(
+  raffleId: string,
+  contractAddress: string,
+  abi: any[]
+) {
   try {
-    const provider = getProvider();
-    const contract = new ethers.Contract(contractAddress, abi, provider);
+    const contract = getContract(contractAddress, abi);
 
-    // Call contract method to verify raffle
-    // This will be implemented once the smart contract is deployed
+    // Call contract method to get raffle data
     const raffleData = await contract.getRaffle(raffleId);
 
     return {
       verified: true,
-      data: raffleData,
+      raffleId: raffleData.raffleId || raffleId,
+      totalTickets: Number(raffleData.totalTickets),
+      ticketsSold: Number(raffleData.ticketsSold),
+      status: raffleData.status,
+      drawTimestamp: raffleData.drawTimestamp
+        ? new Date(Number(raffleData.drawTimestamp) * 1000)
+        : null,
     };
   } catch (error) {
     console.error('Error verifying raffle on chain:', error);
-    throw error;
+    return {
+      verified: false,
+      error: 'Unable to verify raffle on blockchain',
+    };
   }
 }
 
 /**
- * Format address for display (0x1234...5678)
+ * Get raffle draw details from blockchain
+ * Shows Chainlink VRF request ID, random numbers, winner, etc.
+ */
+export async function getRaffleDrawDetails(
+  raffleId: string,
+  contractAddress: string,
+  abi: any[]
+) {
+  try {
+    const contract = getContract(contractAddress, abi);
+
+    const drawData = await contract.getRaffleDraw(raffleId);
+
+    return {
+      raffleId: drawData.raffleId || raffleId,
+      vrfRequestId: drawData.vrfRequestId,
+      randomWord: drawData.randomWord ? drawData.randomWord.toString() : null,
+      winnerTicketNumber: Number(drawData.winnerTicketNumber),
+      winnerAddress: drawData.winnerAddress,
+      timestamp: drawData.timestamp
+        ? new Date(Number(drawData.timestamp) * 1000)
+        : null,
+      transactionHash: drawData.transactionHash,
+    };
+  } catch (error) {
+    console.error('Error fetching draw details:', error);
+    return null;
+  }
+}
+
+/**
+ * Get transaction receipt for audit trail
+ */
+export async function getTransactionReceipt(txHash: string) {
+  try {
+    const provider = getProvider();
+    const receipt = await provider.getTransactionReceipt(txHash);
+
+    if (!receipt) {
+      return null;
+    }
+
+    return {
+      transactionHash: receipt.hash,
+      blockNumber: receipt.blockNumber,
+      blockHash: receipt.blockHash,
+      from: receipt.from,
+      to: receipt.to,
+      gasUsed: receipt.gasUsed.toString(),
+      status: receipt.status === 1 ? 'success' : 'failed',
+      timestamp: null, // Will be fetched from block if needed
+    };
+  } catch (error) {
+    console.error('Error fetching transaction receipt:', error);
+    return null;
+  }
+}
+
+/**
+ * Get block details (for timestamp)
+ */
+export async function getBlock(blockNumber: number) {
+  try {
+    const provider = getProvider();
+    const block = await provider.getBlock(blockNumber);
+
+    if (!block) {
+      return null;
+    }
+
+    return {
+      number: block.number,
+      hash: block.hash,
+      timestamp: new Date(block.timestamp * 1000),
+      transactions: block.transactions.length,
+    };
+  } catch (error) {
+    console.error('Error fetching block:', error);
+    return null;
+  }
+}
+
+/**
+ * Wait for transaction confirmation (useful for audit)
+ */
+export async function waitForTransaction(
+  txHash: string,
+  confirmations: number = 1
+) {
+  try {
+    const provider = getProvider();
+    const receipt = await provider.waitForTransaction(txHash, confirmations);
+    return receipt;
+  } catch (error) {
+    console.error('Error waiting for transaction:', error);
+    return null;
+  }
+}
+
+/**
+ * Get raffle tickets for a specific order (audit trail)
+ */
+export async function getRaffleTickets(
+  orderId: string,
+  contractAddress: string,
+  abi: any[]
+) {
+  try {
+    const contract = getContract(contractAddress, abi);
+
+    const tickets = await contract.getTicketsByOrder(orderId);
+
+    return tickets.map((ticket: any) => ({
+      ticketNumber: Number(ticket.ticketNumber),
+      orderId: ticket.orderId,
+      customerId: ticket.customerId,
+      timestamp: ticket.timestamp
+        ? new Date(Number(ticket.timestamp) * 1000)
+        : null,
+      isWinner: ticket.isWinner || false,
+    }));
+  } catch (error) {
+    console.error('Error fetching raffle tickets:', error);
+    return [];
+  }
+}
+
+/**
+ * Format blockchain address for display (0x1234...5678)
  */
 export function formatAddress(address: string): string {
   if (!address || address.length < 10) return address;
@@ -170,7 +224,7 @@ export function formatAddress(address: string): string {
 /**
  * Format MATIC amount for display
  */
-export function formatMatic(amount: bigint): string {
+export function formatMatic(amount: bigint | string): string {
   return ethers.formatEther(amount);
 }
 
@@ -182,50 +236,69 @@ export function parseMatic(amount: string): bigint {
 }
 
 /**
- * Get transaction receipt
+ * Generate PolygonScan URL for transaction
  */
-export async function getTransactionReceipt(txHash: string) {
-  try {
-    const provider = getProvider();
-    const receipt = await provider.getTransactionReceipt(txHash);
-    return receipt;
-  } catch (error) {
-    console.error('Error fetching transaction receipt:', error);
-    throw error;
-  }
+export function getExplorerTxUrl(txHash: string): string {
+  return `${POLYGON_NETWORK.blockExplorerUrl}tx/${txHash}`;
 }
 
 /**
- * Wait for transaction confirmation
+ * Generate PolygonScan URL for address
  */
-export async function waitForTransaction(txHash: string, confirmations: number = 1) {
+export function getExplorerAddressUrl(address: string): string {
+  return `${POLYGON_NETWORK.blockExplorerUrl}address/${address}`;
+}
+
+/**
+ * Generate PolygonScan URL for block
+ */
+export function getExplorerBlockUrl(blockNumber: number): string {
+  return `${POLYGON_NETWORK.blockExplorerUrl}block/${blockNumber}`;
+}
+
+/**
+ * Check if blockchain is accessible (health check)
+ */
+export async function isBlockchainAccessible(): Promise<boolean> {
   try {
     const provider = getProvider();
-    const receipt = await provider.waitForTransaction(txHash, confirmations);
-    return receipt;
+    const blockNumber = await provider.getBlockNumber();
+    return blockNumber > 0;
   } catch (error) {
-    console.error('Error waiting for transaction:', error);
-    throw error;
+    console.error('Blockchain not accessible:', error);
+    return false;
   }
 }
 
-// Type declarations for window.ethereum
-declare global {
-  interface Window {
-    ethereum?: any;
-  }
-}
-
+// Default export with all functions
 export default {
+  // Provider
   getProvider,
-  getBrowserProvider,
-  connectWallet,
-  switchToPolygon,
   getContract,
+
+  // Raffle verification
   verifyRaffleOnChain,
+  getRaffleDrawDetails,
+  getRaffleTickets,
+
+  // Transaction audit
+  getTransactionReceipt,
+  getBlock,
+  waitForTransaction,
+
+  // Formatting helpers
   formatAddress,
   formatMatic,
   parseMatic,
-  getTransactionReceipt,
-  waitForTransaction,
+
+  // Explorer URLs
+  getExplorerTxUrl,
+  getExplorerAddressUrl,
+  getExplorerBlockUrl,
+
+  // Health check
+  isBlockchainAccessible,
+
+  // Constants
+  POLYGON_NETWORK,
 };

@@ -6,6 +6,7 @@ import {
   RaffleFilters,
   RaffleStatus,
 } from "../types";
+import { validateProductSpecifications, ProductValidationError } from "../utils/product-validation";
 
 /**
  * RaffleService - Gerencia rifas
@@ -277,6 +278,29 @@ class RaffleService extends MedusaService({ Raffle }) {
       throw new Error(
         "Max tickets per customer cannot exceed total tickets"
       );
+    }
+
+    // Product Type and Specifications Validation (Phase 4)
+    if (!data.product_type) {
+      throw new Error("Product type is required");
+    }
+
+    if (!data.product_specifications) {
+      throw new Error("Product specifications are required");
+    }
+
+    try {
+      validateProductSpecifications(
+        data.product_type,
+        data.product_specifications
+      );
+    } catch (error) {
+      if (error instanceof ProductValidationError) {
+        throw new Error(
+          `Invalid product specifications for ${error.productType}: ${error.message}`
+        );
+      }
+      throw error;
     }
   }
 }

@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import useCartStore from '@/store/cart-store';
-import WalletConnect from './WalletConnect';
 import { cn } from '@/lib/utils';
 
 /**
@@ -136,11 +135,6 @@ export default function Header() {
 
           {/* Right side actions */}
           <div className="flex items-center gap-3 sm:gap-4">
-            {/* Wallet Connect - Hidden on small mobile */}
-            <div className="hidden sm:block">
-              <WalletConnect />
-            </div>
-
             {/* Cart button */}
             <button
               onClick={toggleCart}
@@ -246,11 +240,6 @@ export default function Header() {
                       {link.label}
                     </Link>
                   ))}
-                </div>
-
-                {/* Wallet connect for mobile */}
-                <div className="border-t border-neon-purple/20 pt-4">
-                  <WalletConnect />
                 </div>
               </div>
             </motion.div>

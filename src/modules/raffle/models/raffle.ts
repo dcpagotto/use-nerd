@@ -1,5 +1,5 @@
 import { model } from "@medusajs/framework/utils";
-import { RaffleStatus } from "../types";
+import { RaffleStatus, ProductType } from "../types";
 
 /**
  * Raffle Model - Representa uma rifa
@@ -41,13 +41,16 @@ const Raffle = model.define("raffle", {
   terms_and_conditions: model.text().nullable(),
   metadata: model.json().nullable(),
 
+  // Product Type and Specifications (Phase 4)
+  product_type: model.enum(ProductType).default(ProductType.OTHER),
+  product_specifications: model.json().nullable(), // Store ProductSpecifications as JSON
+  supplier_name: model.text().nullable(),
+  supplier_contact: model.text().nullable(),
+  delivery_type: model.text().nullable(), // "pickup" | "shipping" | "digital" | "transfer"
+  delivery_estimate_days: model.number().nullable(),
+
   // Relações
   product_id: model.text().nullable(),
-
-  // Timestamps
-  created_at: model.dateTime().default("now"),
-  updated_at: model.dateTime().default("now"),
-  deleted_at: model.dateTime().nullable(),
 })
   .cascades({
     delete: ["tickets", "draws"],
@@ -64,6 +67,10 @@ const Raffle = model.define("raffle", {
     {
       on: ["start_date", "end_date"],
       name: "IDX_raffle_dates",
+    },
+    {
+      on: ["product_type"],
+      name: "IDX_raffle_product_type",
     },
   ]);
 

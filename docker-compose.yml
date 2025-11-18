@@ -62,6 +62,9 @@ services:
     volumes:
       # Bind mount para hot reload (código fonte)
       - .:/app
+      # Excluir Strapi e Storefront para evitar loop infinito de reloads
+      - /app/strapi-cms
+      - /app/storefront
       # Volume anônimo para node_modules (performance no Windows)
       - /app/node_modules
       # Volume para build artifacts
@@ -82,9 +85,60 @@ services:
       - NODE_ENV=development
       # Log Level
       - LOG_LEVEL=debug
+      # Medusa Port (override .env PORT=1337 intended for Strapi)
+      - PORT=9000
     env_file:
       - .env
     command: npm run dev
+    networks:
+      - use-nerd-network
+    stdin_open: true
+    tty: true
+
+  # Strapi CMS Service
+  strapi-cms:
+    build:
+      context: ./strapi-cms
+      dockerfile: Dockerfile
+      target: development
+    container_name: use-nerd-strapi
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "1337:1337"  # Strapi Admin + API
+    volumes:
+      # Bind mount para hot reload
+      - ./strapi-cms:/app
+      # Volume anônimo para node_modules (performance)
+      - /app/node_modules
+      - /app/.cache
+      # Volume nomeado para uploads
+      - strapi_uploads:/app/public/uploads
+    environment:
+      # Database Configuration
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=use-nerd
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=postgres
+      - DATABASE_SCHEMA=strapi
+      - DATABASE_SSL=false
+      # Server Configuration
+      - HOST=0.0.0.0
+      - PORT=1337
+      - NODE_ENV=development
+      # Strapi Secrets (read from .env)
+      - APP_KEYS=${APP_KEYS}
+      - API_TOKEN_SALT=${API_TOKEN_SALT}
+      - ADMIN_JWT_SECRET=${ADMIN_JWT_SECRET}
+      - TRANSFER_TOKEN_SALT=${TRANSFER_TOKEN_SALT}
+    env_file:
+      - .env
+    command: npm run develop
     networks:
       - use-nerd-network
     stdin_open: true
@@ -107,3 +161,6 @@ volumes:
   medusa_build:
     driver: local
     name: use-nerd-medusa-build
+  strapi_uploads:
+    driver: local
+    name: use-nerd-strapi-uploads

@@ -1,0 +1,42 @@
+{
+  "kind": "collectionType",
+  "collectionName": "nerd_premiados",
+  "info": {
+    "singularName": "nerd-premiado",
+    "pluralName": "nerd-premiados",
+    "displayName": "Nerd Premiado",
+    "description": "Winners showcase"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "winnerName": {
+      "type": "string",
+      "required": true
+    },
+    "raffleName": {
+      "type": "string",
+      "required": true
+    },
+    "winnerPhoto": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "prizeDescription": {
+      "type": "text",
+      "required": true
+    },
+    "drawDate": {
+      "type": "date",
+      "required": true
+    },
+    "featured": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

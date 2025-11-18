@@ -1,0 +1,70 @@
+{
+  "kind": "singleType",
+  "collectionName": "theme_settings",
+  "info": {
+    "singularName": "theme-setting",
+    "pluralName": "theme-settings",
+    "displayName": "Theme Settings",
+    "description": "Manage website theme colors and appearance"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "themeName": {
+      "type": "string",
+      "default": "Cyberpunk Neon"
+    },
+    "primaryColor": {
+      "type": "string",
+      "default": "#a855f7",
+      "regex": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
+    },
+    "secondaryColor": {
+      "type": "string",
+      "default": "#ec4899",
+      "regex": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
+    },
+    "accentColor": {
+      "type": "string",
+      "default": "#06b6d4",
+      "regex": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
+    },
+    "backgroundColor": {
+      "type": "string",
+      "default": "#0f172a",
+      "regex": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
+    },
+    "surfaceColor": {
+      "type": "string",
+      "default": "#1e293b",
+      "regex": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
+    },
+    "textColor": {
+      "type": "string",
+      "default": "#f1f5f9",
+      "regex": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
+    },
+    "textMutedColor": {
+      "type": "string",
+      "default": "#94a3b8",
+      "regex": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
+    },
+    "successColor": {
+      "type": "string",
+      "default": "#10b981",
+      "regex": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
+    },
+    "errorColor": {
+      "type": "string",
+      "default": "#ef4444",
+      "regex": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
+    },
+    "warningColor": {
+      "type": "string",
+      "default": "#f59e0b",
+      "regex": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
+    }
+  }
+}

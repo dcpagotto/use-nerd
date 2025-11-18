@@ -249,3 +249,7 @@ docs/.vuepress/dist/
 .stylelintcache
 *.tgz
 .turbo/
+
+# Windows reserved device names (should never be tracked)
+nul
+NUL

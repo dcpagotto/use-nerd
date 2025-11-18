@@ -1,0 +1,34 @@
+{
+  "name": "use-nerd-strapi-cms",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Strapi CMS for USE Nerd E-commerce - Content Management System",
+  "scripts": {
+    "develop": "strapi develop",
+    "start": "strapi start",
+    "build": "strapi build",
+    "strapi": "strapi"
+  },
+  "dependencies": {
+    "@strapi/plugin-users-permissions": "4.26.0",
+    "@strapi/plugin-i18n": "4.26.0",
+    "@strapi/strapi": "4.26.0",
+    "pg": "8.13.1",
+    "better-sqlite3": "11.8.1",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-router-dom": "^5.2.0",
+    "styled-components": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0"
+  },
+  "author": {
+    "name": "USE Nerd Team"
+  },
+  "engines": {
+    "node": ">=18.0.0 <=22.x.x",
+    "npm": ">=6.0.0"
+  },
+  "license": "MIT"
+}
