@@ -20,8 +20,8 @@ FROM base AS dependencies
 # Copy package files
 COPY package.json package-lock.json* ./
 
-# Install dependencies
-RUN npm ci --legacy-peer-deps
+# Install dependencies (use install instead of ci since we don't have lock file)
+RUN npm install --legacy-peer-deps
 
 # ============================================
 # Builder Stage

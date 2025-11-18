@@ -50,6 +50,9 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+# Create public directory if it doesn't exist
+RUN mkdir -p public/uploads
+
 # Build the admin panel
 RUN npm run build
 
