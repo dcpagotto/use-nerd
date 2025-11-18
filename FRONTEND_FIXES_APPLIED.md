@@ -224,8 +224,8 @@ NEXT_PUBLIC_STRAPI_API_TOKEN=455517fa3df9346a0d5971a9243ee948e80ad97742ea0114ece
 ```
 
 **Credenciais de Acesso:**
-- Email: dhiego@pagotto.eu
-- Senha: ##Dcp1501
+- Email: admin@example.com
+- Senha: [YOUR_SECURE_PASSWORD]
 
 ---
 

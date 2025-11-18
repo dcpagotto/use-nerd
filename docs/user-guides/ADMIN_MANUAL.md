@@ -51,8 +51,8 @@ O **Medusa Admin** é o painel de controle completo da plataforma USE Nerd. Atra
 ### Credenciais Padrão
 
 ```
-Email: dhiego@pagotto.eu
-Senha: ##Dcp1501
+Email: admin@example.com
+Senha: [YOUR_SECURE_PASSWORD]
 ```
 
 **⚠️ IMPORTANTE**: Altere a senha após primeiro login!
@@ -76,7 +76,7 @@ http://localhost:9000/app
 ├────────────────────────────────────────────────┤
 │                                                 │
 │  Email:                                         │
-│  [dhiego@pagotto.eu_________________]          │
+│  [admin@example.com_________________]          │
 │                                                 │
 │  Senha:                                         │
 │  [••••••••••••••••••••••••••••••••]          │
@@ -1335,7 +1335,7 @@ Menu → **Configurações** → **Usuários**
 ├────────────────────────────────────────────────┤
 │  ┌──────────────────────────────────────────┐ │
 │  │ Dhiego Pagotto                           │ │
-│  │ dhiego@pagotto.eu                       │ │
+│  │ admin@example.com                       │ │
 │  │ Role: Owner (Todos os Permissões)        │ │
 │  │ [Editar] [...]                           │ │
 │  ├──────────────────────────────────────────┤ │

@@ -76,7 +76,7 @@ CTA: Explorar Produtos → /produtos
 Content exists in database but needs permissions configured:
 
 1. Go to: http://localhost:1337/admin
-2. Login: `dhiego@pagotto.eu` / `##Dcp1501`
+2. Login: `admin@example.com` / `[YOUR_SECURE_PASSWORD]`
 3. Settings > Roles > Public
 4. Enable `find` + `findOne` for all 5 content types
 5. Click **Save**

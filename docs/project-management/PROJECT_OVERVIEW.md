@@ -443,7 +443,7 @@ Criar uma plataforma de e-commerce completa para o mercado brasileiro que combin
 #### Cliente/Product Owner
 - **Dhiego Pagotto**
 - **Role**: Founder & CEO
-- **Email**: dhiego@pagotto.eu
+- **Email**: admin@example.com
 - **Responsabilidades**:
   - Visão estratégica do produto
   - Aprovação de roadmap

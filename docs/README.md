@@ -98,7 +98,7 @@ Guias práticos para usuários finais e administradores da plataforma.
 **Resumo**: Manual completo para administradores Medusa
 **Conteúdo**:
 - Acessando Medusa Admin (localhost:9000/app)
-- Credenciais: dhiego@pagotto.eu / ##Dcp1501
+- Credenciais: admin@example.com / [YOUR_SECURE_PASSWORD]
 - Gerenciamento de produtos (criar, editar, estoque, preços)
 - Processamento de pedidos (fluxo completo)
 - Gestão de clientes
@@ -283,7 +283,7 @@ Atualize a documentação quando:
 - **Issues**: GitHub Issues
 
 ### Dúvidas de Negócio
-- **Cliente**: dhiego@pagotto.eu
+- **Cliente**: admin@example.com
 - **Project Manager**: [a definir]
 
 ---

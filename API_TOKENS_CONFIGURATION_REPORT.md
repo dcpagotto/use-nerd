@@ -29,8 +29,8 @@ Strapi API tokens are cryptographically hashed when created through the admin UI
 #### Step 1: Login to Strapi Admin
 1. Open browser and navigate to: http://localhost:1337/admin
 2. Login with credentials:
-   - Email: dhiego@pagotto.eu
-   - Password: ##Dcp1501
+   - Email: admin@example.com
+   - Password: [YOUR_SECURE_PASSWORD]
 
 #### Step 2: Create API Token
 1. Click on **Settings** (gear icon in sidebar)
@@ -74,7 +74,7 @@ A publishable API key has been created and configured in the database.
 - **Token**: `pk_c9f247ebb15729b47c19f524b7830283750808c68d7d653d587935fef8224e55`
 - **Type**: `publishable`
 - **Title**: `Frontend Publishable Key`
-- **Created By**: `user_01KA9BMG7JSQ709CBS2G0W1JZ3` (dhiego@pagotto.eu)
+- **Created By**: `user_01KA9BMG7JSQ709CBS2G0W1JZ3` (admin@example.com)
 
 ### Environment Variable
 ```
@@ -304,8 +304,8 @@ The foundation for Frontend ↔ Strapi ↔ Medusa integration has been establish
 - Redis: Running at localhost:6379 (health: healthy)
 
 **Admin Credentials**:
-- Strapi: dhiego@pagotto.eu / ##Dcp1501
-- Medusa: dhiego@pagotto.eu / (check Medusa admin for password)
+- Strapi: admin@example.com / [YOUR_SECURE_PASSWORD]
+- Medusa: admin@example.com / (check Medusa admin for password)
 
 ---
 

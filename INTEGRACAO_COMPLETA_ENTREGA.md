@@ -110,13 +110,13 @@
 
 ### Medusa Admin
 - **URL:** http://localhost:9000/app
-- **Email:** dhiego@pagotto.eu
-- **Senha:** ##Dcp1501
+- **Email:** admin@example.com
+- **Senha:** [YOUR_SECURE_PASSWORD]
 
 ### Strapi Admin
 - **URL:** http://localhost:1337/admin
-- **Email:** dhiego@pagotto.eu
-- **Senha:** ##Dcp1501
+- **Email:** admin@example.com
+- **Senha:** [YOUR_SECURE_PASSWORD]
 
 ---
 

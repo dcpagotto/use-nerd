@@ -173,7 +173,7 @@ curl http://localhost:1337/api/nerd-premiados
 - **PostgreSQL Version**: 15-alpine
 - **Database**: use-nerd
 - **Schema**: strapi
-- **Admin User**: ID 3 (dhiego@pagotto.eu)
+- **Admin User**: ID 3 (admin@example.com)
 
 ---
 

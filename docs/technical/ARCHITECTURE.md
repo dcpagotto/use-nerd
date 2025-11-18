@@ -912,4 +912,4 @@ use-nerd/
 ---
 
 **Document Maintained By:** USE Nerd Development Team
-**Contact:** dhiego@pagotto.eu
+**Contact:** admin@example.com

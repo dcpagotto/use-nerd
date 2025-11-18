@@ -12,7 +12,7 @@
 
 **Steps**:
 1. Open http://localhost:1337/admin
-2. Login: `dhiego@pagotto.eu` / `##Dcp1501`
+2. Login: `admin@example.com` / `[YOUR_SECURE_PASSWORD]`
 3. Go to: Settings > Roles > Public
 4. Enable permissions:
    ```
@@ -469,6 +469,6 @@ curl http://localhost:1337/api/banners
 
 **Next Action**: Configure API permissions (see step 1 above)
 
-**Questions?** Check documentation or contact dhiego@pagotto.eu
+**Questions?** Check documentation or contact admin@example.com
 
 **Status**: 🟢 Ready to proceed

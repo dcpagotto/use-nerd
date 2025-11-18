@@ -1514,5 +1514,5 @@ GET /store/products?expand=variants,images,collection
 ---
 
 **Document Maintained By:** USE Nerd Development Team
-**Contact:** dhiego@pagotto.eu
+**Contact:** admin@example.com
 **Support:** https://github.com/use-nerd/api-docs/issues

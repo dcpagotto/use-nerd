@@ -588,7 +588,7 @@ A plataforma USE Nerd está atualmente em estado **totalmente funcional** para o
 **Próxima atualização**: 24/11/2025
 **Frequência de Updates**: Semanal
 
-**Contato**: dhiego@pagotto.eu
+**Contato**: admin@example.com
 
 ---
 

@@ -499,7 +499,7 @@ A documentação do projeto **USE Nerd** está **100% completa** e pronta para:
 ## 📞 SUPORTE
 
 Para dúvidas sobre a documentação:
-- **Email**: dhiego@pagotto.eu
+- **Email**: admin@example.com
 - **Docs**: C:\Users\dcpagotto\Documents\Projects\use-nerd\docs\
 - **Índice**: docs/README.md
 

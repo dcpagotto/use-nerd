@@ -61,7 +61,7 @@ No primeiro acesso, você criará a conta admin principal:
 │  [Dhiego Pagotto_____________________]         │
 │                                                 │
 │  Email:                                         │
-│  [dhiego@pagotto.eu__________________]         │
+│  [admin@example.com__________________]         │
 │                                                 │
 │  Senha:                                         │
 │  [••••••••••••••••••••••••••••••••]          │
@@ -83,7 +83,7 @@ Após configuração inicial:
 │         Strapi Admin Panel                      │
 ├────────────────────────────────────────────────┤
 │  Email:                                         │
-│  [dhiego@pagotto.eu__________________]         │
+│  [admin@example.com__________________]         │
 │                                                 │
 │  Senha:                                         │
 │  [••••••••••••••••••••••••••••••••]          │

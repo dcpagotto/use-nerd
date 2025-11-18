@@ -32,8 +32,8 @@ http://localhost:1337/admin
 ```
 
 **Login Credentials**:
-- Email: `dhiego@pagotto.eu`
-- Password: `##Dcp1501`
+- Email: `admin@example.com`
+- Password: `[YOUR_SECURE_PASSWORD]`
 
 ---
 
@@ -355,7 +355,7 @@ Before testing the frontend:
 
 - Strapi Documentation: https://docs.strapi.io/
 - USE Nerd Project Docs: See `STRAPI_CONTENT_POPULATION_REPORT.md`
-- Contact: dhiego@pagotto.eu
+- Contact: admin@example.com
 
 ---
 

@@ -457,4 +457,4 @@ Para melhorar esta documentacao:
 ---
 
 **Mantenedores**: USE Nerd Dev Team
-**Contato**: dhiego@pagotto.eu
+**Contato**: admin@example.com

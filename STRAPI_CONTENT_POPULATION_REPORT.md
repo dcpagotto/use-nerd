@@ -329,7 +329,7 @@ curl http://localhost:1337/api/nerd-premiados   # 403 Forbidden
 To make the content accessible via API, you need to configure permissions in Strapi Admin Panel:
 
 1. **Access Strapi Admin**: http://localhost:1337/admin
-2. **Login**: dhiego@pagotto.eu / ##Dcp1501
+2. **Login**: admin@example.com / [YOUR_SECURE_PASSWORD]
 3. **Configure Permissions**:
    - Go to: Settings > Users & Permissions Plugin > Roles > Public
    - For each content type (banners, pages, hero-sections, site-settings, nerd-premiados):
@@ -399,7 +399,7 @@ curl http://localhost:1337/api/nerd-premiados?populate=*
 ### Database
 - **Schema**: strapi
 - **Database**: use-nerd (PostgreSQL)
-- **Admin User ID**: 3 (dhiego@pagotto.eu)
+- **Admin User ID**: 3 (admin@example.com)
 
 ### Table Structures Utilized
 ```
