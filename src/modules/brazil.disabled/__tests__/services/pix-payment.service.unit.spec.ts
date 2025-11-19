@@ -9,6 +9,28 @@ import {
   UpdatePixPaymentDTO,
 } from "../../types";
 
+/**
+ * Type-safe interface for PIX Payment entity
+ * Workaround for DmlEntity not exposing properties directly
+ */
+interface PixPaymentEntity {
+  id: string;
+  order_id: string;
+  status: PixPaymentStatus;
+  amount: number;
+  qr_code?: string;
+  qr_code_text?: string;
+  txid?: string;
+  payer_name?: string;
+  payer_email?: string;
+  payer_cpf_cnpj?: string;
+  description?: string;
+  paid_at?: Date;
+  expires_at?: Date;
+  created_at: Date;
+  updated_at?: Date;
+}
+
 // Mock do MedusaService e logger
 const mockCreate = jest.fn();
 const mockUpdate = jest.fn();
@@ -109,7 +131,7 @@ describe("PixPaymentService", () => {
       };
       mockCreate.mockResolvedValue(mockPayment);
 
-      const result = await service.createPixPayment(validPaymentData);
+      const result = await service.createPixPayment(validPaymentData) as unknown as PixPaymentEntity;
 
       expect(result).toBeDefined();
       expect(result.status).toBe(PixPaymentStatus.PENDING);
@@ -233,7 +255,7 @@ describe("PixPaymentService", () => {
         paid_at: new Date(),
       };
 
-      const result = await service.updatePixPayment("pix_123", updateData);
+      const result = await service.updatePixPayment("pix_123", updateData) as unknown as PixPaymentEntity;
 
       expect(result.status).toBe(PixPaymentStatus.PAID);
       expect(mockUpdate).toHaveBeenCalledWith("pix_123", updateData);
@@ -404,7 +426,7 @@ describe("PixPaymentService", () => {
         status: PixPaymentStatus.EXPIRED,
       });
 
-      const result = await service.expirePayment("pix_123");
+      const result = await service.expirePayment("pix_123") as unknown as PixPaymentEntity;
 
       expect(result.status).toBe(PixPaymentStatus.EXPIRED);
       expect(mockUpdate).toHaveBeenCalledWith("pix_123", {
@@ -422,7 +444,7 @@ describe("PixPaymentService", () => {
       };
       mockRetrieve.mockResolvedValue(mockPayment);
 
-      const result = await service.expirePayment("pix_123");
+      const result = await service.expirePayment("pix_123") as unknown as PixPaymentEntity;
 
       expect(result.status).toBe(PixPaymentStatus.PAID);
       expect(mockUpdate).not.toHaveBeenCalled();

@@ -103,6 +103,12 @@ function formatCNPJ(cnpj: string): string {
   return cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
 }
 
+// Export individual validation and formatting functions for use in tests
+export { validateCPF as isValidCPF };
+export { validateCNPJ as isValidCNPJ };
+export { formatCPF };
+export { formatCNPJ };
+
 /**
  * Valida e formata CEP brasileiro
  */
@@ -129,6 +135,21 @@ function formatCEP(cep: string): string {
   return cep.replace(/(\d{5})(\d{3})/, "$1-$2");
 }
 
+// Export CEP functions
+export { formatCEP };
+
+/**
+ * Valida CEP brasileiro (8 dígitos)
+ */
+export function isValidCEP(cep: string): boolean {
+  if (!cep) return false;
+  const cleaned = String(cep).replace(/\D/g, "");
+  if (cleaned.length !== 8) return false;
+  // Reject invalid patterns
+  if (cleaned === "00000000" || cleaned === "99999999") return false;
+  return true;
+}
+
 /**
  * Valida se string é um email válido
  */
@@ -136,6 +157,9 @@ export function validateEmail(email: string): boolean {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 }
+
+// Export email validation with alias for tests
+export { validateEmail as isValidEmail };
 
 /**
  * Valida se string é um telefone brasileiro válido

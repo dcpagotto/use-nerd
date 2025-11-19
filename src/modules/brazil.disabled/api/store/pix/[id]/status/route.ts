@@ -3,6 +3,22 @@ import { BRAZIL_MODULE } from "../../../../../index";
 import type PixPaymentService from "../../../../../services/pix-payment";
 
 /**
+ * Type-safe interface for PIX Payment entity
+ * Workaround for DmlEntity not exposing properties directly
+ */
+interface PixPaymentEntity {
+  id: string;
+  order_id: string;
+  status: string;
+  amount: number;
+  paid_at?: Date;
+  expires_at?: Date;
+  qr_code?: string;
+  qr_code_text?: string;
+  created_at: Date;
+}
+
+/**
  * GET /store/brazil/pix/:id/status
  *
  * Verifica status de um pagamento PIX
@@ -25,7 +41,7 @@ export const GET = async (
   );
 
   try {
-    const payment = await pixPaymentService.getPixPayment(id);
+    const payment = await pixPaymentService.getPixPayment(id) as unknown as PixPaymentEntity;
 
     if (!payment) {
       res.status(404).json({

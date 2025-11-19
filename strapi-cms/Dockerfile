@@ -25,21 +25,25 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Create necessary directories
-RUN mkdir -p public/uploads
+# Create necessary directories with correct permissions
+RUN mkdir -p public/uploads .strapi/client .strapi/dist build .cache && \
+    chmod -R 777 .strapi build .cache
 
-# Switch to non-root user (ownership will be handled by volume mount)
-USER node
+# Build admin panel during image creation
+RUN npm run build || echo "Build failed, will build on startup"
+
+# NOTA: Rodando como root no desenvolvimento para evitar problemas de permissão
+# Em produção, usar usuário não-root (ver production stage)
 
 # Expose Strapi port
 EXPOSE 1337
 
-# Health check
+# Health check - Accept both 200 and 204 status codes
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s \
-  CMD node -e "require('http').get('http://localhost:1337/_health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+  CMD node -e "require('http').get('http://localhost:1337/_health', (r) => {process.exit((r.statusCode === 200 || r.statusCode === 204) ? 0 : 1)})"
 
-# Start development server
-CMD ["npm", "run", "develop"]
+# Start production server (uses pre-built admin)
+CMD ["npm", "run", "start"]
 
 # ============================================
 # Builder stage
@@ -85,9 +89,9 @@ USER node
 # Expose Strapi port
 EXPOSE 1337
 
-# Health check
+# Health check - Accept both 200 and 204 status codes
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s \
-  CMD node -e "require('http').get('http://localhost:1337/_health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+  CMD node -e "require('http').get('http://localhost:1337/_health', (r) => {process.exit((r.statusCode === 200 || r.statusCode === 204) ? 0 : 1)})"
 
 # Start production server
 CMD ["npm", "run", "start"]

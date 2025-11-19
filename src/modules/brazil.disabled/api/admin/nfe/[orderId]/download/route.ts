@@ -3,6 +3,24 @@ import { BRAZIL_MODULE } from "../../../../../index";
 import type NFeService from "../../../../../services/nfe";
 
 /**
+ * Type-safe interface for NFe entity
+ * Workaround for DmlEntity not exposing properties directly
+ */
+interface NFeEntity {
+  id: string;
+  order_id: string;
+  status: string;
+  nfe_number?: string;
+  nfe_key?: string;
+  pdf_url?: string;
+  xml_url?: string;
+  protocol?: string;
+  authorization_date?: Date;
+  created_at: Date;
+  updated_at?: Date;
+}
+
+/**
  * GET /admin/brazil/nfe/:orderId/download
  *
  * Busca URLs de download da NFe (PDF e XML)
@@ -31,7 +49,7 @@ export const GET = async (
 
   try {
     // Buscar NFe do pedido
-    const nfe = await nfeService.getNFeByOrder(orderId);
+    const nfe = await nfeService.getNFeByOrder(orderId) as unknown as NFeEntity;
 
     if (!nfe) {
       res.status(404).json({

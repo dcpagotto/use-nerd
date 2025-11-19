@@ -64,7 +64,8 @@ export async function GET(
         barcode: variant.barcode,
         allow_backorder: variant.allow_backorder,
         manage_inventory: variant.manage_inventory,
-        inventory_quantity: variant.inventory_quantity || 0,
+        // inventory_quantity not directly available in Medusa v2 ProductVariantDTO
+        // Use inventory service separately if needed
         prices: [], // Prices handled separately in Medusa v2
         options: variant.options,
       })),

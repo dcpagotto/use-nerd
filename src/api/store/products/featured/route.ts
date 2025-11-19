@@ -23,7 +23,7 @@ export async function GET(
   const useRandom = req.query.random === 'true';
 
   try {
-    let featuredProducts = [];
+    let featuredProducts: any[] = [];
 
     // Se não for forçar aleatório, tentar buscar produtos com tag "destaque" ou "featured"
     if (!useRandom) {
@@ -111,7 +111,8 @@ export async function GET(
         barcode: variant.barcode,
         allow_backorder: variant.allow_backorder,
         manage_inventory: variant.manage_inventory,
-        inventory_quantity: variant.inventory_quantity || 0,
+        // inventory_quantity not directly available in Medusa v2 ProductVariantDTO
+        // Use inventory service separately if needed
         prices: [], // Prices handled separately in Medusa v2
         options: variant.options,
       })),
