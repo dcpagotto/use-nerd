@@ -2,10 +2,35 @@ import type {
   MedusaRequest,
   MedusaResponse,
 } from "@medusajs/framework/http";
+import type { IEventBusModuleService } from "@medusajs/framework/types";
 import { MedusaError } from "@medusajs/framework/utils";
 import { RAFFLE_MODULE } from "../../../../../modules/raffle";
 import type RaffleService from "../../../../../modules/raffle/services/raffle";
 import type RaffleDrawService from "../../../../../modules/raffle/services/raffle-draw";
+
+/**
+ * Type definitions for Raffle entities
+ * These interfaces provide type safety when working with DmlEntity objects
+ */
+interface RaffleEntity {
+  id: string;
+  status: string;
+  total_tickets: number;
+  current_tickets?: number;
+  title?: string;
+  description?: string;
+}
+
+interface RaffleDrawEntity {
+  id: string;
+  raffle_id: string;
+  vrf_request_id: string;
+  vrf_transaction_hash: string;
+  executed_by: string;
+  status?: string;
+  created_at: Date;
+  updated_at?: Date;
+}
 
 /**
  * Test Draw Endpoint - APENAS PARA DESENVOLVIMENTO
@@ -47,7 +72,7 @@ export async function POST(
   const raffleDrawService: RaffleDrawService = req.scope.resolve(
     `${RAFFLE_MODULE}.raffle-draw`
   );
-  const eventBusService = req.scope.resolve("eventBusService");
+  const eventBusService = req.scope.resolve("eventBusService") as IEventBusModuleService;
 
   const raffleId = req.params.id;
 
@@ -55,7 +80,7 @@ export async function POST(
     logger.info(`[Test Draw] Initiating test draw for raffle: ${raffleId}`);
 
     // 1. Buscar rifa e validar
-    const raffle = await raffleService.getRaffle(raffleId);
+    const raffle = await raffleService.getRaffle(raffleId) as unknown as RaffleEntity;
 
     if (raffle.status !== "active" && raffle.status !== "sold_out") {
       throw new MedusaError(
@@ -75,8 +100,9 @@ export async function POST(
     const draw = await raffleDrawService.createDraw({
       raffle_id: raffleId,
       vrf_request_id: vrfRequestId,
-      transaction_hash: transactionHash,
-    });
+      vrf_transaction_hash: transactionHash,
+      executed_by: "test-system", // Test endpoint always uses system execution
+    }) as unknown as RaffleDrawEntity;
 
     logger.info(`[Test Draw] Draw record created: ${draw.id}`);
 
@@ -95,10 +121,13 @@ export async function POST(
           `[Test Draw] Simulating Chainlink VRF callback for: ${vrfRequestId}`
         );
 
-        await eventBusService.emit("raffle.chainlink_vrf_callback", {
-          vrf_request_id: vrfRequestId,
-          random_words: randomWords,
-          received_at: new Date().toISOString(),
+        await eventBusService.emit({
+          name: "raffle.chainlink_vrf_callback",
+          data: {
+            vrf_request_id: vrfRequestId,
+            random_words: randomWords,
+            received_at: new Date().toISOString(),
+          },
         });
 
         logger.info(`[Test Draw] VRF callback event emitted successfully`);
