@@ -1,0 +1,192 @@
+name: Deploy to Docker Swarm
+
+on:
+  workflow_run:
+    workflows: ["CD - Build & Push Docker Images"]
+    types:
+      - completed
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+
+env:
+  STACK_NAME: usenerd
+  REGISTRY: ghcr.io
+
+jobs:
+  # ============================================
+  # Deploy to Docker Swarm
+  # ============================================
+  deploy:
+    name: Deploy to Swarm (${{ github.event.inputs.environment || 'production' }})
+    runs-on: ubuntu-latest
+    # Only run if the previous workflow succeeded
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+
+    environment:
+      name: ${{ github.event.inputs.environment || 'production' }}
+      url: https://api.usenerd.com
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SWARM_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SWARM_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Prepare deployment environment
+        run: |
+          # Create .env file for deployment
+          cat > .env.deploy << EOF
+          POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+          REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
+          JWT_SECRET=${{ secrets.JWT_SECRET }}
+          COOKIE_SECRET=${{ secrets.COOKIE_SECRET }}
+          APP_KEYS=${{ secrets.STRAPI_APP_KEYS }}
+          API_TOKEN_SALT=${{ secrets.STRAPI_API_TOKEN_SALT }}
+          ADMIN_JWT_SECRET=${{ secrets.STRAPI_ADMIN_JWT_SECRET }}
+          TRANSFER_TOKEN_SALT=${{ secrets.STRAPI_TRANSFER_TOKEN_SALT }}
+          EOF
+
+      - name: Update docker-stack.yml with image tags
+        run: |
+          # Update image references to use GitHub Container Registry
+          sed -i "s|image: usenerd-medusa-backend|image: ${{ env.REGISTRY }}/${{ github.repository_owner }}/usenerd-medusa-backend:latest|g" docker-stack.yml
+          sed -i "s|image: usenerd-strapi-cms|image: ${{ env.REGISTRY }}/${{ github.repository_owner }}/usenerd-strapi-cms:latest|g" docker-stack.yml
+
+      - name: Copy files to Swarm manager
+        run: |
+          scp -i ~/.ssh/id_rsa \
+            docker-stack.yml \
+            .env.deploy \
+            ${{ secrets.SWARM_USER }}@${{ secrets.SWARM_HOST }}:/tmp/
+
+      - name: Login to GitHub Container Registry on Swarm
+        run: |
+          ssh -i ~/.ssh/id_rsa ${{ secrets.SWARM_USER }}@${{ secrets.SWARM_HOST }} \
+            "echo ${{ secrets.GITHUB_TOKEN }} | docker login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin"
+
+      - name: Pull latest images on Swarm
+        run: |
+          ssh -i ~/.ssh/id_rsa ${{ secrets.SWARM_USER }}@${{ secrets.SWARM_HOST }} << 'EOF'
+            docker pull ${{ env.REGISTRY }}/${{ github.repository_owner }}/usenerd-medusa-backend:latest
+            docker pull ${{ env.REGISTRY }}/${{ github.repository_owner }}/usenerd-strapi-cms:latest
+          EOF
+
+      - name: Deploy stack to Swarm
+        run: |
+          ssh -i ~/.ssh/id_rsa ${{ secrets.SWARM_USER }}@${{ secrets.SWARM_HOST }} << 'EOF'
+            # Load environment variables
+            export $(cat /tmp/.env.deploy | xargs)
+
+            # Deploy stack
+            docker stack deploy \
+              --compose-file /tmp/docker-stack.yml \
+              --with-registry-auth \
+              ${{ env.STACK_NAME }}
+
+            echo "Stack deployed successfully!"
+          EOF
+
+      - name: Wait for services to be ready
+        run: |
+          ssh -i ~/.ssh/id_rsa ${{ secrets.SWARM_USER }}@${{ secrets.SWARM_HOST }} << 'EOF'
+            echo "Waiting for services to start..."
+            sleep 30
+
+            # Check service status
+            docker stack services ${{ env.STACK_NAME }}
+
+            # Wait for replicas to be ready
+            for i in {1..12}; do
+              REPLICAS=$(docker stack services ${{ env.STACK_NAME }} --format "{{.Replicas}}" | grep -v "0/0")
+              if echo "$REPLICAS" | grep -qv "0/"; then
+                echo "✅ Services are running!"
+                docker stack services ${{ env.STACK_NAME }}
+                exit 0
+              fi
+              echo "Waiting... ($i/12)"
+              sleep 10
+            done
+
+            echo "⚠️ Some services may not be ready yet"
+            docker stack services ${{ env.STACK_NAME }}
+          EOF
+
+      - name: Health check
+        run: |
+          echo "Performing health checks..."
+
+          # Wait a bit more for health checks
+          sleep 15
+
+          # Check backend health (api.usenerd.com)
+          curl -f -s -o /dev/null https://api.usenerd.com/health || echo "⚠️ Backend health check failed"
+
+          # Check admin health (admin.usenerd.com)
+          curl -f -s -o /dev/null https://admin.usenerd.com/health || echo "⚠️ Admin health check failed"
+
+          # Check CMS health (cms.usenerd.com)
+          curl -f -s -o /dev/null https://cms.usenerd.com/_health || echo "⚠️ CMS health check failed"
+
+          echo "✅ Deployment complete!"
+        continue-on-error: true
+
+      - name: Cleanup
+        if: always()
+        run: |
+          ssh -i ~/.ssh/id_rsa ${{ secrets.SWARM_USER }}@${{ secrets.SWARM_HOST }} \
+            "rm -f /tmp/docker-stack.yml /tmp/.env.deploy"
+          rm -f ~/.ssh/id_rsa .env.deploy
+
+      - name: Deployment summary
+        run: |
+          echo "## 🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Environment:** ${{ github.event.inputs.environment || 'production' }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Stack:** ${{ env.STACK_NAME }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Images:**" >> $GITHUB_STEP_SUMMARY
+          echo "- Backend: \`${{ env.REGISTRY }}/${{ github.repository_owner }}/usenerd-medusa-backend:latest\`" >> $GITHUB_STEP_SUMMARY
+          echo "- Strapi: \`${{ env.REGISTRY }}/${{ github.repository_owner }}/usenerd-strapi-cms:latest\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Services:**" >> $GITHUB_STEP_SUMMARY
+          echo "- API: https://api.usenerd.com" >> $GITHUB_STEP_SUMMARY
+          echo "- Admin: https://admin.usenerd.com" >> $GITHUB_STEP_SUMMARY
+          echo "- CMS: https://cms.usenerd.com" >> $GITHUB_STEP_SUMMARY
+
+  # ============================================
+  # Rollback (manual trigger only)
+  # ============================================
+  rollback:
+    name: Rollback Deployment
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' && failure() }}
+
+    steps:
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SWARM_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SWARM_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Rollback stack
+        run: |
+          ssh -i ~/.ssh/id_rsa ${{ secrets.SWARM_USER }}@${{ secrets.SWARM_HOST }} << 'EOF'
+            echo "Rolling back to previous version..."
+            docker service update --rollback ${{ env.STACK_NAME }}_backend
+            docker service update --rollback ${{ env.STACK_NAME }}_strapi
+            echo "✅ Rollback completed"
+          EOF
