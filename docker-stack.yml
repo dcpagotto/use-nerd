@@ -92,14 +92,16 @@ services:
         # API Router (api.usenerd.com)
         - "traefik.http.routers.usenerd-api.rule=Host(`api.usenerd.com`)"
         - "traefik.http.routers.usenerd-api.entrypoints=websecure"
-        - "traefik.http.routers.usenerd-api.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.usenerd-api.tls=true"
+        - "traefik.http.routers.usenerd-api.tls.certresolver=letsencryptresolver"
         - "traefik.http.routers.usenerd-api.service=usenerd-api"
         - "traefik.http.services.usenerd-api.loadbalancer.server.port=9000"
 
         # Admin Router (admin.usenerd.com)
         - "traefik.http.routers.usenerd-admin.rule=Host(`admin.usenerd.com`)"
         - "traefik.http.routers.usenerd-admin.entrypoints=websecure"
-        - "traefik.http.routers.usenerd-admin.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.usenerd-admin.tls=true"
+        - "traefik.http.routers.usenerd-admin.tls.certresolver=letsencryptresolver"
         - "traefik.http.routers.usenerd-admin.service=usenerd-admin"
         - "traefik.http.services.usenerd-admin.loadbalancer.server.port=9000"
 
@@ -140,7 +142,8 @@ services:
         # CMS Router (cms.usenerd.com)
         - "traefik.http.routers.usenerd-cms.rule=Host(`cms.usenerd.com`)"
         - "traefik.http.routers.usenerd-cms.entrypoints=websecure"
-        - "traefik.http.routers.usenerd-cms.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.usenerd-cms.tls=true"
+        - "traefik.http.routers.usenerd-cms.tls.certresolver=letsencryptresolver"
         - "traefik.http.routers.usenerd-cms.service=usenerd-cms"
         - "traefik.http.services.usenerd-cms.loadbalancer.server.port=1337"
 
