@@ -19,7 +19,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - usenerd-network
+      - network_public
     deploy:
       replicas: 1
       placement:
@@ -42,7 +42,7 @@ services:
     volumes:
       - redis_data:/data
     networks:
-      - usenerd-network
+      - network_public
     deploy:
       replicas: 1
       placement:
@@ -76,7 +76,6 @@ services:
       - LOG_LEVEL=info
       - PORT=9000
     networks:
-      - usenerd-network
       - network_public
     deploy:
       replicas: 2
@@ -129,7 +128,6 @@ services:
       - TRANSFER_TOKEN_SALT=${TRANSFER_TOKEN_SALT}
       - STRAPI_URL=https://cms.usenerd.com
     networks:
-      - usenerd-network
       - network_public
     deploy:
       replicas: 1
@@ -151,10 +149,6 @@ services:
 # Networks
 # ============================================
 networks:
-  usenerd-network:
-    driver: overlay
-    name: usenerd-network
-    attachable: true
   network_public:
     external: true
 
