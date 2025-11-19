@@ -2,6 +2,7 @@ import type {
   MedusaRequest,
   MedusaResponse,
 } from "@medusajs/framework/http";
+import type { IEventBusModuleService } from "@medusajs/framework/types";
 import { MedusaError } from "@medusajs/framework/utils";
 
 /**
@@ -34,7 +35,7 @@ export async function POST(
   res: MedusaResponse
 ) {
   const logger = req.scope.resolve("logger");
-  const eventBusService = req.scope.resolve("eventBusService");
+  const eventBusService = req.scope.resolve("eventBusService") as IEventBusModuleService;
 
   try {
     const { requestId, randomWords } = req.body;
@@ -68,10 +69,13 @@ export async function POST(
     // }
 
     // Disparar evento interno para o subscriber processar
-    await eventBusService.emit("raffle.chainlink_vrf_callback", {
-      vrf_request_id: requestId,
-      random_words: randomWords,
-      received_at: new Date().toISOString(),
+    await eventBusService.emit({
+      name: "raffle.chainlink_vrf_callback",
+      data: {
+        vrf_request_id: requestId,
+        random_words: randomWords,
+        received_at: new Date().toISOString(),
+      },
     });
 
     logger.info(

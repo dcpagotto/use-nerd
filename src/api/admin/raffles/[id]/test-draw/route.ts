@@ -80,6 +80,8 @@ export async function POST(
     logger.info(`[Test Draw] Initiating test draw for raffle: ${raffleId}`);
 
     // 1. Buscar rifa e validar
+    // Note: Double-cast (as unknown as) is necessary because Medusa v2.0 returns DmlEntity<...>
+    // which doesn't expose model properties directly to TypeScript strict mode
     const raffle = await raffleService.getRaffle(raffleId) as unknown as RaffleEntity;
 
     if (raffle.status !== "active" && raffle.status !== "sold_out") {
@@ -102,7 +104,7 @@ export async function POST(
       vrf_request_id: vrfRequestId,
       vrf_transaction_hash: transactionHash,
       executed_by: "test-system", // Test endpoint always uses system execution
-    }) as unknown as RaffleDrawEntity;
+    }) as unknown as RaffleDrawEntity; // Type assertion for DmlEntity return type
 
     logger.info(`[Test Draw] Draw record created: ${draw.id}`);
 
