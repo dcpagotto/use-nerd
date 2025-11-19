@@ -49,7 +49,9 @@
       "Bash([ -d \"storefront/app/rifas\" ])",
       "Bash([ -d \"storefront/app/nerd-premiado\" ])",
       "Bash([ -d \"src/api/admin/raffles\" ])",
-      "Bash([ -d \"src/api/store/raffles\" ])"
+      "Bash([ -d \"src/api/store/raffles\" ])",
+      "Bash(ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 root@srv.betabits.com.br \"echo ''Conexão SSH estabelecida!'' && uname -a && docker --version && docker info --format ''{{.Swarm.LocalNodeState}}''\")",
+      "Bash(scp:*)"
     ],
     "deny": [],
     "ask": []

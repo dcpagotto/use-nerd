@@ -1,0 +1,169 @@
+version: '3.8'
+
+# ============================================
+# USE Nerd - Docker Swarm Stack (Production)
+# Minimal e-commerce: Medusa + Strapi + Frontend
+# ============================================
+
+services:
+  # ============================================
+  # PostgreSQL Database
+  # ============================================
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: usenerd
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: usenerd_production
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - network_public
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: on-failure
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U usenerd"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================
+  # Redis Cache
+  # ============================================
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    networks:
+      - network_public
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: on-failure
+    healthcheck:
+      test: ["CMD", "redis-cli", "--pass", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # ============================================
+  # Medusa Backend
+  # ============================================
+  backend:
+    image: ghcr.io/dcpagotto/usenerd-medusa-backend:latest
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      - DATABASE_URL=postgresql://usenerd:${POSTGRES_PASSWORD}@postgres:5432/usenerd_production?sslmode=disable
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
+      - STORE_CORS=https://usenerd.com,https://www.usenerd.com
+      - ADMIN_CORS=https://admin.usenerd.com
+      - AUTH_CORS=https://admin.usenerd.com,https://usenerd.com,https://www.usenerd.com
+      - JWT_SECRET=${JWT_SECRET}
+      - COOKIE_SECRET=${COOKIE_SECRET}
+      - NODE_ENV=production
+      - LOG_LEVEL=info
+      - PORT=9000
+    networks:
+      - network_public
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+      labels:
+        - "traefik.enable=true"
+        - "traefik.docker.network=network_public"
+
+        # API Router (api.usenerd.com) - Não usado ainda
+        - "traefik.http.routers.usenerd-api.rule=Host(`api.usenerd.com`)"
+        - "traefik.http.routers.usenerd-api.entrypoints=websecure"
+        - "traefik.http.routers.usenerd-api.tls=true"
+        - "traefik.http.routers.usenerd-api.tls.certresolver=letsencryptresolver"
+        - "traefik.http.routers.usenerd-api.service=usenerd-api"
+        - "traefik.http.services.usenerd-api.loadbalancer.server.port=9000"
+
+        # Admin Router (admin.usenerd.com) - PRINCIPAL
+        - "traefik.http.routers.usenerd-admin.rule=Host(`admin.usenerd.com`)"
+        - "traefik.http.routers.usenerd-admin.entrypoints=websecure"
+        - "traefik.http.routers.usenerd-admin.tls=true"
+        - "traefik.http.routers.usenerd-admin.tls.certresolver=letsencryptresolver"
+        - "traefik.http.routers.usenerd-admin.service=usenerd-admin"
+        - "traefik.http.services.usenerd-admin.loadbalancer.server.port=9000"
+
+  # ============================================
+  # Strapi CMS
+  # ============================================
+  strapi:
+    image: ghcr.io/dcpagotto/usenerd-strapi-cms:latest
+    depends_on:
+      - postgres
+    environment:
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=usenerd_production
+      - DATABASE_USERNAME=usenerd
+      - DATABASE_PASSWORD=${POSTGRES_PASSWORD}
+      - DATABASE_SCHEMA=strapi
+      - DATABASE_SSL=false
+      - HOST=0.0.0.0
+      - PORT=1337
+      - NODE_ENV=production
+      - APP_KEYS=${STRAPI_APP_KEYS}
+      - API_TOKEN_SALT=${STRAPI_API_TOKEN_SALT}
+      - ADMIN_JWT_SECRET=${STRAPI_ADMIN_JWT_SECRET}
+      - TRANSFER_TOKEN_SALT=${STRAPI_TRANSFER_TOKEN_SALT}
+      - STRAPI_URL=https://cms.usenerd.com
+    volumes:
+      - strapi_uploads:/app/public/uploads
+    networks:
+      - network_public
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      labels:
+        - "traefik.enable=true"
+        - "traefik.docker.network=network_public"
+
+        # CMS Router (cms.usenerd.com)
+        - "traefik.http.routers.usenerd-cms.rule=Host(`cms.usenerd.com`)"
+        - "traefik.http.routers.usenerd-cms.entrypoints=websecure"
+        - "traefik.http.routers.usenerd-cms.tls=true"
+        - "traefik.http.routers.usenerd-cms.tls.certresolver=letsencryptresolver"
+        - "traefik.http.routers.usenerd-cms.service=usenerd-cms"
+        - "traefik.http.services.usenerd-cms.loadbalancer.server.port=1337"
+
+# ============================================
+# Networks
+# ============================================
+networks:
+  network_public:
+    external: true
+
+# ============================================
+# Volumes
+# ============================================
+volumes:
+  postgres_data:
+    driver: local
+    name: usenerd-postgres-data
+  redis_data:
+    driver: local
+    name: usenerd-redis-data
+  strapi_uploads:
+    driver: local
+    name: usenerd-strapi-uploads
