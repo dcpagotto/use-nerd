@@ -7,6 +7,9 @@ yarn.lock
 .pnp
 .pnp.js
 
+# Frontend (excluir do build do backend)
+storefront
+
 # Build artifacts
 dist
 build
