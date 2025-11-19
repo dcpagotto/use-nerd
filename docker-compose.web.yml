@@ -154,7 +154,7 @@ services:
 # ============================================
 networks:
   usenerd-network:
-    driver: bridge
+    external: true
     name: usenerd-network
 
 # ============================================
